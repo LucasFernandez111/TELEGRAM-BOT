@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/bot/bot-admin/bot.js"
+    "start": "node --env.file .env ./src/app.js",
+    "dev":"nodemon --env-file=.env ./src/app.js" 
   },
   "keywords": [],
   "author": "",
