@@ -5,7 +5,10 @@ const ProductSchema = new Schema(
     title: {
       type: String,
     },
-    imgpath: {
+    textAdmin: {
+      type: String,
+    },
+    imgPath: {
       type: String,
     },
     url: {
