@@ -27,6 +27,17 @@ const ProductSchema = new Schema(
   }
 );
 
+ProductSchema.pre("save", (next) => {
+  console.log("Se actualizó la base de datos");
+
+  next();
+});
+
+ProductSchema.post("save", function (doc, next) {
+  console.log("Se guardó el documento:", doc);
+  next();
+});
+
 const ProductModel = model("products", ProductSchema);
 
 module.exports = {
