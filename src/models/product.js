@@ -33,7 +33,7 @@ ProductSchema.pre("save", (next) => {
   next();
 });
 
-ProductSchema.post("save", function (doc, next) {
+ProductSchema.post("save", (doc, next) => {
   console.log("Se guardó el documento:", doc);
   next();
 });
