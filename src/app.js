@@ -1,4 +1,4 @@
-// const { Telegraf } = require("telegraf");
+const { Telegraf } = require("telegraf");
 const { dbConnect } = require("./config/mongo");
 const {
   getProducts,
@@ -6,23 +6,20 @@ const {
   getProduct,
 } = require("./services/product");
 
-// const botAdmin = new Telegraf(process.env.KEY_BOT_ADMIN);
-// //const botClient = new Telegraf(process.env.KEY_BOT_CLIENT);
-// //const botGroup = new Telegraf(process.env.KEY_BOT_GROUP);
+const botAdmin = new Telegraf(process.env.KEY_BOT_ADMIN);
+const botGroup = new Telegraf(process.env.KEY_BOT_GROUP);
+const image = require("./bot/bot-group/images/mama-dolar.png");
 
-insertProduct({
-  title: "Cocina",
-  textAdmin: "Cocina en descuento",
-  imgPath: "c:imagenes",
-  url: "http://mercadolibre.com/cocina",
-  description: "Cocina para todo tipo de hogares simple y economica",
-  key: "COCINA03",
+botAdmin.on("message", () => {
+  botGroup.telegram.sendPhoto(
+    process.env.ID_GROUP,
+    { source: image },
+    { caption: "Aquí está tu foto!" }
+  );
 });
-// getProducts().then((products) => console.log(products));
-getProduct().then((products) => console.log(products));
-// botAdmin.launch();
-//botClient.launch();
-//botGroup.launch();
+botAdmin.launch();
+
+botGroup.launch();
 
 dbConnect().then(() => {
   console.log("Database Conectada");
