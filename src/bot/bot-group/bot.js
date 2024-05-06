@@ -1,30 +1,37 @@
 const { Telegraf } = require("telegraf");
-const { command } = require("./commands/command");
+const fs = require("fs");
+const botGroup = new Telegraf(process.env.KEY_BOT_GROUP);
+const { getImageUrl } = require("../../services/file");
 
-const bot = new Telegraf("6596583850:AAG5QRT84Tw-PZMHzfGgYqdW84zkajhzjoQ");
+const ID_GROUP = process.env.ID_GROUP;
 
-bot.start((ctx) => {
-  ctx.reply("Hello");
-});
+const sendPost = ({ title, textAdmin, price, imgPath, description, key }) => {
+  const image = fs.readFileSync(imgPath);
 
-bot.command("menu", (ctx) => {
-  ctx.reply("Hi there!", {
-    reply_markup: {
-      inline_keyboard: [
-        /* Inline buttons. 2 side-by-side */
-        [
-          { text: "Button 1", callback_data: "btn-1" },
-          { text: "Button 2", callback_data: "btn-2" },
-        ],
-
-        /* One button */
-        [{ text: "Next", pay: ctx.reply("jajajaja") }],
-
-        /* Also, we can have URL buttons. */
-        [{ text: "Open in browser", url: "telegraf.js.org" }],
-      ],
+  botGroup.telegram.sendPhoto(
+    ID_GROUP,
+    {
+      source: image,
     },
-  });
-});
+    {
+      caption:
+        `¡Nuevo producto disponible!\n\n` +
+        `*${title}*\n\n` +
+        `${textAdmin}\n\n` +
+        `${description}\n` +
+        `Precio: *$${price.toFixed(2)}*\n\n` +
+        `Palabra clave: *${key}*\n\n` +
+        `[¡Compra ahora!]`,
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "Ver Producto", url: "https://www.google.com" }],
+        ],
+      },
+    }
+  );
+};
 
-bot.launch();
+module.exports = {
+  sendPost,
+};
