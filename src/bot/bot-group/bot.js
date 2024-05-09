@@ -1,32 +1,34 @@
 const { Telegraf } = require("telegraf");
-const fs = require("fs");
+const { textGroup } = require("./response/text_response");
 const botGroup = new Telegraf(process.env.KEY_BOT_GROUP);
-const { getImageUrl } = require("../../services/file");
 
 const ID_GROUP = process.env.ID_GROUP;
 
-const sendPost = ({ title, textAdmin, price, imgPath, description, key }) => {
-  const image = fs.readFileSync(imgPath);
-
+const sendPost = ({
+  title,
+  textAdmin,
+  url,
+  price,
+  imgPath,
+  description,
+  key,
+}) => {
   botGroup.telegram.sendPhoto(
-    ID_GROUP,
+    "@glgekGLf",
     {
-      source: image,
+      source: imgPath,
     },
     {
-      caption:
-        `¡Nuevo producto disponible!\n\n` +
-        `*${title}*\n\n` +
-        `${textAdmin}\n\n` +
-        `${description}\n` +
-        `Precio: *$${price.toFixed(2)}*\n\n` +
-        `Palabra clave: *${key}*\n\n` +
-        `[¡Compra ahora!]`,
+      caption: `**🔥${title}🔥**
+      \nHoy nuestra tienda de importaciones 🕵️ te trae ${title}. Para comprarlo es muy fácil, seleccionas las medidas, tamaño o colores, rellenas con tus datos de envío y solo queda esperar para disfrutar de tu compra.
+      \n**MUY IMPORTANTE; NOS DEBES DE ENVIAR EL COMPROBANTE PARA REGISTRAR LA COMPRA PARA EVITAR PROBLEMAS DE ENVIO.**
+      \nEn tan solo unos días, dependiendo del lugar, te llegará en las mejores condiciones y ahorrando un dineral!
+      \n✅${price}✅
+      \n**🔥Acuérdate de enviarnos el comprobante🔥**
+      \n🚫OFERTA LIMITADA DE ESTE CANAL DE VENTAS🚫`,
       parse_mode: "Markdown",
       reply_markup: {
-        inline_keyboard: [
-          [{ text: "Ver Producto", url: "https://www.google.com" }],
-        ],
+        inline_keyboard: [[{ text: "Ver Producto", url: `${url}` }]],
       },
     }
   );
