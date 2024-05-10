@@ -6,9 +6,10 @@ const {
   startResponse,
   productDataWizard,
 } = require("./bot/bot-admin/functions/functions");
+const { automatic, publicProduct } = require("./controller/actions");
 
-const botAdmin = new Telegraf(process.env.KEY_BOT_ADMIN);
-const botGroup = new Telegraf(process.env.KEY_BOT_GROUP);
+const botAdmin = new Telegraf(process.env.TOKEN_BOT_ADMIN);
+const botGroup = new Telegraf(process.env.TOKEN_BOT_GROUP);
 
 botAdmin.command("enviar", () => {
   const date = {
@@ -37,6 +38,7 @@ botAdmin.use(stage.middleware());
 botAdmin.action("manual", (ctx) => {
   ctx.scene.enter("PRODUCT_DATA_WIZARD");
 });
+botAdmin.action("automatic", (ctx) => automatic(ctx, botAdmin));
 
 botAdmin.launch();
 botGroup.launch();
@@ -44,7 +46,3 @@ botGroup.launch();
 dbConnect().then(() => {
   console.log("Database Conectada");
 });
-
-module.exports = {
-  botAdmin,
-};

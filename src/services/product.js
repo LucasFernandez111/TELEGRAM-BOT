@@ -1,4 +1,5 @@
 const { ProductModel } = require("../models/product");
+const { readExcelFile, parseExcelFile } = require("./get_data_excel");
 
 const insertProduct = async (product) => {
   const responseInsert = await ProductModel.create(product);
@@ -18,8 +19,15 @@ const getProduct = async () => {
   return responseGet;
 };
 
+const publicProduct = async (ctx, path) => {
+  const workBook = await readExcelFile(path);
+
+  const dataExcel = await parseExcelFile(workBook);
+};
+
 module.exports = {
   insertProduct,
   getProducts,
   getProduct,
+  publicProduct,
 };
