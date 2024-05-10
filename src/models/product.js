@@ -5,9 +5,6 @@ const ProductSchema = new Schema(
     title: {
       type: String,
     },
-    textAdmin: {
-      type: String,
-    },
     imgPath: {
       type: String,
     },
@@ -17,9 +14,7 @@ const ProductSchema = new Schema(
     price: {
       type: Number,
     },
-    description: {
-      type: String,
-    },
+
     key: {
       type: String,
     },
