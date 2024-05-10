@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --env.file .env ./src/app.js",
     "dev": "nodemon --env-file=.env ./src/app.js",
-    "start-dev": "nodemon --env-file=.env ./src/services/scraping.js"
+    "start-dev": "nodemon --env-file=.env ./src/services/get_data_excel.js"
   },
   "keywords": [],
   "author": "",

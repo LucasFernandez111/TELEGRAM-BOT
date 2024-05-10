@@ -17,7 +17,7 @@ botAdmin.command("enviar", () => {
     textAdmin:
       " Quería informarles sobre el nuevo producto que acabamos de lanzar en nuestra tienda en línea.",
     imgPath:
-      "C:\\Users\\fluca\\OneDrive\\Escritorio\\TELEGRAM-BOT\\src\\bot\\bot-group\\images\\reloj.jpeg",
+      "C:\\Users\\Lucas\\Desktop\\TELEGRAM-BOT\\src\\images\\Motocicleta-de-gasolina-china-nuevo-dise-o-150cc-Chopper-Cruiser-Vintage.jpg_.jpg",
     url: "https://es.aliexpress.com/item/",
     price: 50.99,
     description:

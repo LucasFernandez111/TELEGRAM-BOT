@@ -1,35 +1,34 @@
-const path = require("path");
 const XlsxPopulate = require("xlsx-populate");
 
 const readExcelFile = async (filePath) => {
-  try {
-    const workBook = await XlsxPopulate.fromFileAsync(filePath);
+  const workBook = await XlsxPopulate.fromFileAsync(filePath);
 
-    return workBook;
-  } catch (error) {
-    console.log("Error al leer archivo", error);
-  }
+  return workBook;
 };
 
 const parseExcelFile = (workBook) => {
+  let productAll = [];
   const sheetNames = workBook.sheets().map((sheet) => sheet.name());
 
-  const sheetData = sheetNames.map((name) =>
-    workBook.sheet(name).usedRange().value()
-  );
+  sheetNames.map((name) => {
+    const result = workBook.sheet(name).usedRange().value();
 
-  const rowData = sheetData[0].slice(1).map((row) => {
-    return {
-      code: row[0],
-      url: row[1],
-    };
+    const res = result.map((row) => {
+      const filteredRow = row.filter((value) => value !== undefined); // Excluir los valores `undefined`
+      return {
+        code: filteredRow[0],
+        url: filteredRow[1],
+      };
+    });
+
+    const filteredRes = res
+      .slice(1)
+      .filter((obj) => obj.code !== undefined || obj.url !== undefined);
+
+    filteredRes.forEach((product) => productAll.push(product));
   });
 
-  const filteredData = rowData.filter(
-    (obj) => obj.code !== undefined && obj.url !== undefined
-  );
-
-  return filteredData;
+  return productAll;
 };
 
 module.exports = {

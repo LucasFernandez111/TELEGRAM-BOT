@@ -1,11 +1,10 @@
 const { Markup } = require("telegraf");
-const { getDocument } = require("../services/get_file");
+const { getDocument } = require("../services/file");
 const { handleError } = require("../utils/error_handle");
 const { publicProduct } = require("../services/product");
 
 const automatic = (ctx, bot) => {
   ctx.reply("Envia el archivo Excel");
-
   bot.on("document", async (ctx) => {
     try {
       const { response, path } = await getDocument(
@@ -15,7 +14,7 @@ const automatic = (ctx, bot) => {
       await ctx.replyWithMarkdownV2(response);
 
       await ctx.replyWithMarkdownV2(
-        "¿Desea publicar el producto?",
+        "¿Desea publicar los producto?",
         Markup.inlineKeyboard([
           Markup.button.callback("SI", "publicing"),
           Markup.button.callback("NO", "noPublicing"),
@@ -24,7 +23,7 @@ const automatic = (ctx, bot) => {
 
       bot.action("publicing", (ctx) => publicProduct(ctx, path));
     } catch (error) {
-      handleError(ctx, error);
+      ctx.replyWithMarkdownV2(error.message);
     }
   });
 };
