@@ -26,6 +26,7 @@ const getProduct = async () => {
 
 const publicProduct = async (ctx, path) => {
   try {
+    ctx.reply("Publicando...");
     const workBook = await readExcelFile(path);
 
     const allDataExcel = await parseExcelFile(workBook);
@@ -52,15 +53,23 @@ const publicProduct = async (ctx, path) => {
         return {
           ...product,
           imgPath,
+          textAdmin:
+            " Quería informarles sobre el nuevo producto que acabamos de lanzar en nuestra tienda en línea.",
+          price: 50.99,
+          description:
+            "pulsera de lujo para hombre, cronógrafo luminoso, resistente al agua, de cuarzo, de acero inoxidable ",
+          key: "RELOJCUARZO",
         };
       })
     );
 
-    await sendPost(productList[0]);
+    await Promise.all(
+      productList.map(async (product) => await sendPost(product))
+    );
 
-    return productList;
+    ctx.reply("Todos los elementos publicados");
   } catch (error) {
-    console.log(error);
+    throw Error(error);
   }
 };
 

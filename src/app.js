@@ -14,6 +14,8 @@ const botGroup = new Telegraf(process.env.TOKEN_BOT_GROUP);
 botAdmin.command("enviar", () => {
   const date = {
     title: "reloj",
+    imageUrl:
+      "https://ae01.alicdn.com/kf/S505840536c5844a497e0d72d76c1e7c18/U-as-postizas-ovaladas-esculpidas-u-as-post",
     textAdmin:
       " Quería informarles sobre el nuevo producto que acabamos de lanzar en nuestra tienda en línea.",
     imgPath:

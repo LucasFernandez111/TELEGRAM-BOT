@@ -5,6 +5,9 @@ const ProductSchema = new Schema(
     title: {
       type: String,
     },
+    imageUrl: {
+      type: String,
+    },
     imgPath: {
       type: String,
     },
@@ -24,17 +27,6 @@ const ProductSchema = new Schema(
     versionKey: false,
   }
 );
-
-ProductSchema.pre("save", (next) => {
-  console.log("Se actualizó la base de datos");
-
-  next();
-});
-
-ProductSchema.post("save", (doc, next) => {
-  console.log("Se guardó el documento:", doc);
-  next();
-});
 
 const ProductModel = model("products", ProductSchema);
 
