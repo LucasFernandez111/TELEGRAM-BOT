@@ -14,7 +14,7 @@ const parseExcelFile = (workBook) => {
     const result = workBook.sheet(name).usedRange().value();
 
     const res = result.map((row) => {
-      const filteredRow = row.filter((value) => value !== undefined); // Excluir los valores `undefined`
+      const filteredRow = row.filter((value) => value !== undefined);
       return {
         code: filteredRow[0],
         url: filteredRow[1],

@@ -31,20 +31,9 @@ const publicProduct = async (ctx, path) => {
 
     const allDataExcel = await parseExcelFile(workBook);
 
-    const urlPageAll = allDataExcel.map(({ url }) => {
-      return { url };
-    });
+    const urlPageAll = allDataExcel.map(({ url }) => url);
 
-    const productInfoAll = await Promise.all(
-      urlPageAll.map(async ({ url }) => {
-        const productInfo = await getPageData(url);
-
-        return {
-          ...productInfo,
-          url,
-        };
-      })
-    );
+    const productInfoAll = await getPageData(urlPageAll);
 
     const productList = await Promise.all(
       productInfoAll.map(async (product) => {

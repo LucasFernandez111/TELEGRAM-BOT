@@ -23,6 +23,7 @@ const automatic = (ctx, bot) => {
 
       bot.action("publicing", (ctx) => publicProduct(ctx, path));
     } catch (error) {
+      console.log(error);
       ctx.replyWithMarkdownV2(error.message);
     }
   });
