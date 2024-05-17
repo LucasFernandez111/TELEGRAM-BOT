@@ -5,12 +5,6 @@ const ProductSchema = new Schema(
     title: {
       type: String,
     },
-    imageUrl: {
-      type: String,
-    },
-    imgPath: {
-      type: String,
-    },
     url: {
       type: String,
     },
@@ -18,7 +12,7 @@ const ProductSchema = new Schema(
       type: Number,
     },
 
-    key: {
+    code: {
       type: String,
     },
   },

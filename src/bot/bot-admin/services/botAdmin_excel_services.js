@@ -15,15 +15,20 @@ const parseExcelFile = (workBook) => {
 
     const res = result.map((row) => {
       const filteredRow = row.filter((value) => value !== undefined);
+
+      const code = filteredRow[0];
+      const url = filteredRow[1]?.split("?", 1);
+      console.log(filteredRow[1]);
+
       return {
-        code: filteredRow[0],
-        url: filteredRow[1],
+        code,
+        url,
       };
     });
 
-    const filteredRes = res
-      .slice(1)
-      .filter((obj) => obj.code !== undefined || obj.url !== undefined);
+    const filteredRes = res.filter(
+      (obj) => obj.code !== undefined || obj.url !== undefined
+    );
 
     filteredRes.forEach((product) => productAll.push(product));
   });

@@ -1,5 +1,6 @@
 const handleError = (ctx, error) => {
-  ctx.replyWithMarkdownV2(error);
+  console.info(error);
+  ctx.reply(error.message);
 };
 
 module.exports = { handleError };
