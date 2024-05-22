@@ -1,5 +1,6 @@
 const { handleError } = require("../../../utils/error_handle");
 const { getInfoUser } = require("../../../utils/getInfoUser");
+const { responseMessage } = require("../services/botClient_services");
 
 const {
   menuMessage,
@@ -30,6 +31,7 @@ const handleStart = (ctx) => {
 const handleButtonQuestions = (ctx) => {
   /** Button Preguntas Frecuentes */
   try {
+    ctx.answerCbQuery();
     ctx.replyWithMarkdown(questionsMessage.message, questionsKeyBoard);
   } catch (error) {
     handleError(ctx, error);
@@ -40,6 +42,7 @@ const handleButtonInfo = (ctx) => {
   /** Button Informacion Valiosa */
 
   try {
+    ctx.answerCbQuery();
     ctx.replyWithMarkdown(infoMessage.message, infoKeyBoard);
   } catch (error) {
     handleError(ctx, error);
@@ -49,6 +52,16 @@ const handleButtonInfo = (ctx) => {
 const handleMenu = (ctx) => {
   /**  /menu */
   ctx.replyWithMarkdown(menuMessage.messageDos, menuKeyBoard);
+};
+
+const handleCustomQuestion = async (ctx) => {
+  /** Boton pregunta personalizada */
+  try {
+    await ctx.scene.enter("sceneMessage");
+    await ctx.answerCbQuery();
+  } catch (error) {
+    handleError(ctx, error);
+  }
 };
 
 const handleButtonCallBack = async (ctx) => {
@@ -93,44 +106,59 @@ const handleButtonCallBack = async (ctx) => {
 
       break;
 
-    case "option5":
+    case "other0":
       ctx.replyWithMarkdown(
         `Todos los que permita la plataforma de Aliexpress 💳.`
       );
 
       break;
 
-    case "option6":
+    case "other1":
       ctx.replyWithMarkdown(
         `Es recomendable hacer pedidos específicos. En resumen, haz un pedido a pedido para evitar errores en tu compra. 📦`
       );
 
       break;
 
-    case "option7":
+    case "other2":
       ctx.replyWithMarkdown(
         `Las características se encuentran en las imágenes del GRUPO DE VENTAS, el precio de los productos es el de ALIEXPRESS. 🛒`
       );
 
       break;
 
-    case "option8":
+    case "other3":
       ctx.replyWithMarkdown(`Estamos chequeando esa opción... 🕵️‍♂️`);
       break;
 
-    case "option9":
+    case "other4":
       ctx.replyWithMarkdown(
         `Los enlaces en general se renuevan por razones obvias. Estate atento para no perder la oportunidad de comprar productos al mejor precio. 💰`
       );
 
       break;
 
-    case "option10":
-      ctx.replyWithMarkdown(
-        await ctx.editMessageReplyMarkup({
-          inline_keyboard: questionsKeyBoardReturn,
-        })
-      );
+    case "other5":
+      await ctx.editMessageReplyMarkup({
+        inline_keyboard: questionsKeyBoardReturn,
+      });
+  }
+};
+
+const handleResponseMessage = async (ctx) => {
+  try {
+    await responseMessage(ctx);
+  } catch (error) {
+    handleError(ctx, error);
+  }
+};
+
+const handleButtonReceipt = async (ctx) => {
+  try {
+    await ctx.scene.enter("sceneGetReceipt");
+    await ctx.answerCbQuery();
+  } catch (error) {
+    handleError(ctx, error);
   }
 };
 
@@ -140,4 +168,7 @@ module.exports = {
   handleButtonInfo,
   handleButtonQuestions,
   handleButtonCallBack,
+  handleCustomQuestion,
+  handleResponseMessage,
+  handleButtonReceipt,
 };

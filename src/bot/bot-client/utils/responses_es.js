@@ -37,7 +37,7 @@ const messageEs = {
   },
 
   infoMessage: {
-    message: "ㅤㅤㅤ*INFORMACION VALIOSA*ㅤㅤ",
+    message: "ㅤㅤㅤ*INFORMACION VALIOSA*",
     keyboard: {
       text_options: [
         "ㅤ🔍 ENLACES CON MÁS DE UNA SEMANA",
