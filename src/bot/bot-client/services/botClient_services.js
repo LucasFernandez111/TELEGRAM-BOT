@@ -1,30 +1,33 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-
 const messageMap = new Map();
 
-const sendMessageUser = async (ctx) => {
-  const ID_CHAT_USER = process.env.ID_CHAT_USER;
-  const sender = ctx.message.from.username || ctx.message.from.first_name;
-  const messageUser = ctx.message.text;
-  const userId = ctx.message.from.id;
+const sendMessageUser = async ({ message, telegram }) => {
+  const ID_CHAT_ALEX = process.env.ID_CHAT_ALEX;
+  const sender = message.from.username || message.from.first_name;
+  const messageUser = message.text;
+  const userId = message.from.id;
 
   const date = new Date();
-
   const options = { timeZone: "Europe/Madrid", hour12: false };
-
   const horaEspaña = date.toLocaleString("es-ES", options);
 
-  const sentMessage = await ctx.telegram.sendMessage(
-    ID_CHAT_USER,
-    `📬¡Nuevo mensaje de *${sender}*!\n\n📩 Mensaje:*\n${messageUser}* \n\nFECHA:${horaEspaña}`,
-    {
-      parse_mode: "Markdown",
-    }
-  );
+  try {
+    const sentMessage = await telegram.sendMessage(
+      ID_CHAT_ALEX,
+      `📬¡Nuevo mensaje de *${sender}*!\n\n📩 Mensaje:*\n${messageUser}* \n\nFECHA:${horaEspaña}`,
+      {
+        parse_mode: "Markdown",
+      }
+    );
 
-  messageMap.set(sentMessage.message_id, { userId, messageUser, sender });
+    messageMap.set(sentMessage.message_id, { userId, messageUser, sender });
+  } catch (error) {
+    throw new Error(
+      "Error al enviar el mensaje. Por favor, inténtalo nuevamente más tarde."
+    );
+  }
 };
 
 const responseMessage = async (ctx) => {
@@ -58,7 +61,24 @@ const responseMessage = async (ctx) => {
   messageMap.delete(repliedMessageId);
 };
 
-const sendReceipt = async (ctx) => {};
+const sendReceipt = async (ctx, chat_id, data, file_name) => {
+  ctx.telegram.sendDocument(chat_id, {
+    source: data,
+    filename: file_name,
+  });
+  const confirmMessage = await ctx.reply(
+    "✅Comprobante enviado correctamente!"
+  );
+
+  console.log(confirmMessage);
+
+  setTimeout(() => {
+    ctx.telegram.deleteMessage(
+      confirmMessage.chat.id,
+      confirmMessage.message_id
+    );
+  }, 4500);
+};
 
 /**
  * Uploads a file using the provided context.
@@ -90,9 +110,8 @@ const uploadFile = async ({ message, telegram }) => {
     responseType: "stream",
   });
 
-  const writer = fs.createWriteStream(filePath);
+  const writer = await fs.createWriteStream(filePath);
 
-  // Espera a que la descarga del archivo se complete antes de cerrar el archivo
   await new Promise((resolve, reject) => {
     response.data.pipe(writer);
     response.data.on("end", () => {

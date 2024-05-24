@@ -2,8 +2,11 @@ const { Telegraf, Scenes, session } = require("telegraf");
 const botClientController = require("./controller/botClient_controller");
 const { infoMessage } = require("./utils/responses_es");
 const { sceneMessage, sceneGetReceipt } = require("./services/scenes");
+const { sceneMessageMiddleware } = require("./middleware/scenes_midleware");
 const botClient = new Telegraf(process.env.TOKEN_BOT_CLIENT);
 const stage = new Scenes.Stage([sceneMessage, sceneGetReceipt]);
+
+sceneMessage.use(sceneMessageMiddleware);
 
 botClient.use(session());
 

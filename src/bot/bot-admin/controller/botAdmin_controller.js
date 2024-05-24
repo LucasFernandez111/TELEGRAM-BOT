@@ -1,4 +1,5 @@
 const { handleError } = require("../../../utils/error_handle");
+const { getPageData } = require("../../../utils/scraping");
 const { getFileLink, uploadFile } = require("../../../utils/upload_file");
 const {
   getDocumentButton,
@@ -21,8 +22,6 @@ const handleButtonAutomaticOn = async (ctx) => {
     ctx.replyWithMarkdownV2("Excel cargado correctamente");
     await getDocumentButton(ctx);
 
-    ctx.answerCbQuery();
-
     await ctx.replyWithMarkdownV2(
       query,
       Markup.inlineKeyboard([
@@ -43,9 +42,14 @@ const handleButtonAutomaticOn = async (ctx) => {
 
 const handleButtonPublish = async (ctx) => {
   try {
-    ctx.replyWithMarkdownV2("Leyendo excel");
+    ctx.replyWithMarkdown("Leyendo excel");
+    const { productAll, yupooUrl } = await getDataXlsx(ctx);
 
-    const productInfoList = await getDataXlsx(ctx);
+    const url_list = productAll.map((data) => data.url);
+
+    const pages_info = await getPageData(yupooUrl);
+
+    console.log(pages_info);
   } catch (error) {
     handleError(ctx, error);
   }

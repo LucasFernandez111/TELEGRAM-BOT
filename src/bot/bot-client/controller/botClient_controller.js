@@ -56,12 +56,9 @@ const handleMenu = (ctx) => {
 
 const handleCustomQuestion = async (ctx) => {
   /** Boton pregunta personalizada */
-  try {
-    await ctx.scene.enter("sceneMessage");
-    await ctx.answerCbQuery();
-  } catch (error) {
-    handleError(ctx, error);
-  }
+
+  await ctx.scene.enter("sceneMessage");
+  await ctx.answerCbQuery();
 };
 
 const handleButtonCallBack = async (ctx) => {
