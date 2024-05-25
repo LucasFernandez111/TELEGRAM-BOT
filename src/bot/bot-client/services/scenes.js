@@ -5,7 +5,6 @@ const {
   sendReceipt,
 } = require("./botClient_services");
 const fs = require("fs/promises");
-const { handleError } = require("../../../utils/error_handle");
 
 const sceneMessage = new Scenes.WizardScene(
   "sceneMessage",
@@ -26,10 +25,18 @@ const sceneMessage = new Scenes.WizardScene(
   async (ctx) => {
     clearTimeout(ctx.wizard.state.timeout);
 
-    await sendMessageUser(ctx);
-    ctx.reply(
-      `¡Gracias! Tu pregunta ha sido recibida. El asistente responderá pronto.`
-    );
+    try {
+      await sendMessageUser(ctx);
+      ctx.reply(
+        `¡Gracias! Tu pregunta ha sido recibida. El asistente responderá pronto.`
+      );
+    } catch (error) {
+      // Maneja el error de manera específica, por ejemplo:
+
+      ctx.reply(error);
+    } finally {
+      ctx.scene.leave();
+    }
   }
 );
 
@@ -47,16 +54,20 @@ const sceneGetReceipt = new Scenes.WizardScene(
   },
 
   async (ctx) => {
-    clearTimeout(ctx.wizard.state.timeout);
-    const chat_id = ctx.from.id;
+    try {
+      clearTimeout(ctx.wizard.state.timeout);
+      const chat_id = ctx.from.id;
 
-    const { fileName, filePath } = await uploadFile(ctx);
+      const { fileName, filePath } = await uploadFile(ctx);
 
-    const data = await fs.readFile(filePath);
+      const data = await fs.readFile(filePath);
 
-    await sendReceipt(ctx, chat_id, data, fileName);
-
-    ctx.scene.leave();
+      await sendReceipt(ctx, chat_id, data, fileName);
+    } catch {
+      ctx.reply("Documento no recibido!, intentelo nuevamente");
+    } finally {
+      ctx.scene.leave();
+    }
   }
 );
 

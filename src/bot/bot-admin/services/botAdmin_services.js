@@ -18,18 +18,6 @@ const startHandler = (ctx) => {
   );
 };
 
-const getDocumentButton = async (ctx) => {
-  try {
-    const { relativePath, fileUrl } = await getFileLink(ctx);
-
-    await uploadFile(relativePath, fileUrl);
-
-    return relativePath;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
 const getDataXlsx = async (ctx) => {
   const dirPathDocument = path.join(__dirname, "../../../uploads/document");
 
@@ -53,6 +41,6 @@ const getDataXlsx = async (ctx) => {
 };
 module.exports = {
   startHandler,
-  getDocumentButton,
+
   getDataXlsx,
 };

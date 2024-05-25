@@ -8,45 +8,54 @@ const readExcelFile = async (filePath) => {
 
 const parseExcelFile = (workBook) => {
   let productAll = [];
-  let yupooUrl = [];
+
   const sheetNames = workBook.sheets().map((sheet) => sheet.name());
+  const yupooUrl = workBook.sheet(0).cell("C1").value();
 
-  sheetNames.map((name) => {
-    const sheet = workBook.sheet(name);
-    const usedRange = sheet.usedRange(); // Obtener el rango usado de la hoja
-    const lastRowNumber = usedRange.endCell().rowNumber(); // Última fila con datos
+  if (!yupooUrl) {
+    throw Error("No se encontro la URL de yupoo en ('C1') !");
+  }
 
-    const rowNumbers = Array.from({ length: lastRowNumber }, (_, i) => i + 1);
+  if (!yupooUrl.includes("yupoo.com"))
+    throw Error("No es una URL de yupoo en ('C1')!");
 
-    const values = rowNumbers
-      .map((rowNumber) => sheet.cell(`D${rowNumber}`).value())
-      .filter((value) => value !== undefined);
+  try {
+    sheetNames.forEach((name) => {
+      const sheet = workBook.sheet(name);
 
-    yupooUrl.push(...values);
+      const usedRange = sheet.usedRange();
+      if (!usedRange) {
+        throw new Error(`No se pudo obtener el rango usado de la hoja ${name}`);
+      }
 
-    const res = usedRange.value().map((row) => {
-      const filteredRow = row.filter((value) => value !== undefined);
+      const res = usedRange.value().map((row) => {
+        if (!row) return [];
 
-      const code = filteredRow[0];
-      const url = filteredRow[1]?.split("?", 1)[0];
+        const filteredRow = row.filter((value) => value !== undefined);
 
-      return {
-        code,
-        url,
-      };
+        const code = filteredRow[0];
+        const url = filteredRow[1]?.split("?", 1)[0];
+
+        return {
+          code,
+          url,
+        };
+      });
+
+      const filteredRes = res
+        .slice(1)
+        .filter((obj) => obj.code !== undefined || obj.url !== undefined);
+
+      filteredRes.forEach((product) => productAll.push(product));
     });
 
-    const filteredRes = res
-      .slice(1)
-      .filter((obj) => obj.code !== undefined || obj.url !== undefined);
-
-    filteredRes.forEach((product) => productAll.push(product));
-  });
-
-  return {
-    yupooUrl,
-    productAll,
-  };
+    return {
+      productAll,
+      yupooUrl,
+    };
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
 module.exports = {

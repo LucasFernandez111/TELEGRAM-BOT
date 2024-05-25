@@ -6,22 +6,19 @@ const getFileLink = async (ctx) => {
   const document = ctx.update.message.document;
   const tokenBot = process.env.TOKEN_BOT_ADMIN;
 
-  const { file_id, file_name } = document;
+  const { file_id } = document;
 
   const fileInfo = await ctx.telegram.getFile(file_id);
   const filePath = fileInfo.file_path;
   const fileUrl = `https://api.telegram.org/file/bot${tokenBot}/${filePath}`;
-  const relativePath = path.join(__dirname, `../uploads/document/${file_name}`);
 
-  return {
-    fileUrl,
-    relativePath,
-  };
+  return fileUrl;
 };
 
-const uploadFile = async (relativePath, fileUrl) => {
-  //Crea flujo de escritura en relativePath
-  const writer = fs.createWriteStream(relativePath);
+const uploadFile = async (pathUpload, fileUrl, fileName) => {
+  const relativePath = path.join(__dirname, "../uploads", pathUpload);
+
+  const writer = fs.createWriteStream(`${relativePath}/${fileName}`); //Crea flujo de escritura en relativePath
 
   const stream = await axios({
     url: fileUrl,
@@ -34,8 +31,10 @@ const uploadFile = async (relativePath, fileUrl) => {
   writer.on("error", () => {
     throw Error(`${"🚫"}*Error al guardar el archivo*`);
   });
-
-  return relativePath;
+  writer.on("finish", () => {
+    writer.end();
+  });
+  return `${relativePath}\\${fileName}`;
 };
 
 const downloadImage = async (fileUrl) => {

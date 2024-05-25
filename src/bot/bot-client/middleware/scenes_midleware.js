@@ -6,3 +6,12 @@ exports.sceneMessageMiddleware = (ctx, next) => {
     return;
   }
 };
+
+exports.blockOtherHandlers = (ctx, next) => {
+  if (ctx.scene && ctx.scene.current) {
+    return ctx.reply(
+      "Por favor, complete la interacción actual antes de continuar."
+    );
+  }
+  return next();
+};

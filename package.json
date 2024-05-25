@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=.env ./src/",
+    "start": "nodemon  ./src/utils/prueba.js",
     "dev": "nodemon --env-file=.env ./src/index.js",
     "debugger": "nodemon --env-file=.env ./src/utils/scraping.js"
   },

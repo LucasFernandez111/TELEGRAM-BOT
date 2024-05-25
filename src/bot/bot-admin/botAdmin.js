@@ -15,7 +15,7 @@ botAdmin.on(
   botAdminController.handleButtonAutomaticOn
 );
 
-botAdmin.action("button_no_publish");
+botAdmin.action("button_no_publish", botAdminController.handleButtonDelete);
 botAdmin.action("button_publish", botAdminController.handleButtonPublish);
 
 module.exports = botAdmin;

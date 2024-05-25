@@ -28,26 +28,13 @@ const taskAliexpress = async (page) => {
   return { title, price };
 };
 
-const taskYupoo = async (page, code) => {
-  const srcUrl = await page.evaluate(() => {
-    // Seleccionar el elemento <img> por su clase o cualquier otro selector
-    const imgElement = document.querySelector("img.album__absolute");
-
-    // Obtener el valor del atributo src
-    const src = imgElement ? imgElement.getAttribute("src") : null;
-
-    return src;
-  });
-
-  console.log(srcUrl); // Imprimir la URL del src en la consola
-};
-
 /**
  *
  * @param {Array} URL_LIST - ["http://....,http://...."]
+ * @param {Array} CODE_LIST - [1242,3434,535]
  *
  */
-const getPageData = async (URL_LIST) => {
+const getPageData = async (URL_LIST, CODE_LIST) => {
   let dataList = [];
   const cluster = await Cluster.launch({
     puppeteerOptions: {
@@ -60,23 +47,40 @@ const getPageData = async (URL_LIST) => {
   });
 
   await cluster.task(async ({ page, data: url }) => {
-    await page.setRequestInterception(true);
+    if (url.includes("yupoo")) {
+      await page.goto(`${url}search/album?q=${CODE_LIST}&uid=1&sort=`);
+      await page.waitForNetworkIdle({ timeout: 50000 });
+      await page.waitForSelector(".album__title"); // Asegura que los elementos se han cargado
+      await page.waitForSelector(".album__img");
+      const titleCode = await page.$$eval(".album__title", (elements) =>
+        elements.map((element) => element.textContent)
+      );
 
-    await page.on("request", requestInterception);
-    await page.goto(url);
+      const imgList = await page.$$eval(".album__img", (imgs) =>
+        imgs.map((img) => img.src)
+      );
 
-    if (url.includes("aliexpress")) {
-      data = await taskAliexpress(page);
-      return dataList.push(data);
+      const list = imgList.map((imgURL, i) => {
+        return {
+          code: titleCode[i],
+          imgURL,
+        };
+      });
+
+      dataList = list.filter(({ imgURL }) => imgURL != "");
+
+      return;
     }
 
-    await taskYupoo(page);
+    await page.setRequestInterception(true);
+    await page.on("request", requestInterception);
+    await page.goto(url);
+    data = await taskAliexpress(page);
+
+    return dataList.push(data);
   });
-  cluster.on("taskerror", (err, data) => {
+  cluster.on("taskerror", (err) => {
     console.error(`Error en la tarea para : ${err.message}`);
-  });
-  cluster.on("taskend", (task) => {
-    console.log(`Tarea finalizada para ${task.data}`);
   });
 
   URL_LIST.forEach((url) => {

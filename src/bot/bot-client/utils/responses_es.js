@@ -3,7 +3,9 @@
 const messageEs = {
   welcomeMessage: {
     startMessage: (username) =>
-      `Hola! *${username}* 😊 Soy Joselu, TU ASISTENTE PERSONAL.\nEstoy aquí para ayudarte.\n\nSi necesitas algo, no dudes en preguntarme. 🤖 (/menu)`,
+      `Hola! *${
+        username || "Amig@"
+      }* 😊 Soy Joselu, TU ASISTENTE PERSONAL.\nEstoy aquí para ayudarte.\n\nSi necesitas algo, no dudes en preguntarme. 🤖 (/menu)`,
   },
 
   menuMessage: {

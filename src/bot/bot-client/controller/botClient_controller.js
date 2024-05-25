@@ -22,6 +22,7 @@ const handleStart = (ctx) => {
 
   try {
     const { username } = getInfoUser(ctx);
+
     ctx.replyWithMarkdown(welcomeMessage.startMessage(username));
   } catch (error) {
     handleError(ctx, error);
