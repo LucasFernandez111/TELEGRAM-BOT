@@ -5,6 +5,7 @@ const {
   readExcelFile,
   parseExcelFile,
   createNewExcel,
+  getElementsExcel,
 } = require("./botAdmin_excel_services");
 const { deleteAllFile } = require("../../../utils/files");
 const path = require("path");
@@ -18,6 +19,7 @@ const getDocument = new Scenes.WizardScene(
 
   async (ctx) => {
     try {
+      // uploadMiddleware(ctx);
       const fileLink = await getFileLink(ctx); // Link Telegram file
 
       ctx.session.excelPath = await uploadFile({
@@ -56,4 +58,17 @@ const getDocument = new Scenes.WizardScene(
   }
 );
 
-module.exports = new Scenes.Stage([getDocument]);
+const publishElements = new Scenes.WizardScene(
+  "publish_elements_scene",
+  (ctx) => {
+    ctx.reply("Ajunta archivo *EXCEL* para ser publicado📢");
+    ctx.wizard.next();
+  },
+
+  (ctx) => {
+    // getElementsExcel({workBook: })
+
+    ctx.scene.leave();
+  }
+);
+module.exports = new Scenes.Stage([getDocument, publishElements]);

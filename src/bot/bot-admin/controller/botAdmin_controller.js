@@ -1,15 +1,8 @@
 const { handleError } = require("../../../utils/error_handle");
-const { getPageData } = require("../../../utils/scraping");
-const { uploadFile, getFileLink } = require("../../../utils/upload_file");
 const {
   deleteAllFile,
 } = require("../../bot-client/services/botClient_services");
 const path = require("path");
-const { getFileXlsx } = require("../services/botAdmin_services");
-const { publishMessage } = require("../utils/responses_en");
-const { Markup } = require("telegraf");
-const { code } = require("telegraf/format");
-const { sendPost } = require("../../bot-group/services/botGroup_services");
 
 const handleButtonAutomatic = async (ctx) => {
   ctx.scene.enter("get_document_scene");
@@ -57,7 +50,6 @@ const handleButtonDelete = (ctx) => {
 };
 module.exports = {
   handleButtonAutomatic,
-  handleButtonAutomaticOn,
   handleButtonPublish,
   handleButtonDelete,
 };

@@ -91,9 +91,9 @@ const createNewExcel = async ({ products, yupooUrl }) => {
   }
 };
 
-const getElementsExcel = ({ workBook, range }) => {
+const getElementsExcel = ({ workBook }) => {
   const sheet = workBook.sheet(0);
-  const data = sheet.range("C1:C5").values();
+  const data = sheet.range("A1:A5").values();
   console.log(data);
 };
 
