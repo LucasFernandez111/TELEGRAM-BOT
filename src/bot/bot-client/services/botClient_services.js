@@ -47,7 +47,7 @@ const responseMessage = async (ctx) => {
   const { messageUser, sender } = messageInfo;
 
   await ctx.telegram.sendMessage(
-    5519333143,
+    963702071,
     `¡Hola *${sender}*!,\n\n✅ Su consulta ha sido atendida con éxito.\n\n❓: ${messageUser} \n\n📨 Respuesta: \n- *${adminResponse}*`,
     {
       parse_mode: "Markdown",
@@ -127,31 +127,9 @@ const uploadFile = async ({ message, telegram }) => {
   return { fileName, filePath, fileLink };
 };
 
-const deleteAllFile = (relativePath) => {
-  fs.readdir(relativePath, (err, files) => {
-    if (err) {
-      console.error("Error al leer el directorio:", err);
-      return;
-    }
-
-    files.forEach((file) => {
-      fs.unlink(`${relativePath}/${file}`, (err) => {
-        if (err) {
-          console.error(`Error al eliminar el archivo ${file}:`, err);
-        } else {
-          console.log(`Archivo ${file} eliminado correctamente.`);
-        }
-      });
-    });
-  });
-};
-
-module.exports = deleteAllFile;
-
 module.exports = {
   sendMessageUser,
   responseMessage,
   sendReceipt,
   uploadFile,
-  deleteAllFile,
 };

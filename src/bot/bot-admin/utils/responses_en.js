@@ -1,16 +1,17 @@
 const messageEs = {
   publishMessage: {},
   welcomeMessage: {
-    startMessage: "Bienvenido Alex Ingrese la forma de publicar producto",
+    startMessage:
+      "¡Hola, *Alex*! Soy Jarvis 🤖, tu asistente personal exclusivo.\n\n📢¿Cómo prefieres cargar los productos?",
     keyBoard: {
-      text_automatic: "Automático",
+      text_automatic: "📄 Automático",
       callback_automatic: "button_automatic",
-      text_manual: "Manual",
+      text_manual: "🤲 Manualmente",
       callback_manual: "manual",
     },
   },
   publishMessage: {
-    query: "Desea publicar los productos",
+    query: "¿Desea publicar los productos al canal? 🛒📢",
     keyBoard: {
       text_publish: "SI",
       callback_publish: "button_publish",

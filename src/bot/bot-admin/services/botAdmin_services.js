@@ -9,38 +9,40 @@ const startHandler = (ctx) => {
   const { startMessage, keyBoard } = welcomeMessage;
   const { text_manual, text_automatic, callback_automatic, callback_manual } =
     keyBoard;
-  ctx.replyWithMarkdownV2(
+  ctx.replyWithMarkdown(
     startMessage,
     Markup.inlineKeyboard([
-      Markup.button.callback(text_automatic, callback_automatic),
-      Markup.button.callback(text_manual, callback_manual),
+      [Markup.button.callback(text_automatic, callback_automatic)],
+      [Markup.button.callback(text_manual, callback_manual)],
     ])
   );
 };
 
-const getDataXlsx = async (ctx) => {
-  const dirPathDocument = path.join(__dirname, "../../../uploads/document");
+const getFileXlsx = async (ctx) => {
+  const dirPathDocument = path.join(
+    __dirname,
+    "../../../uploads/document/loadDocuments/"
+  );
 
   const files = await fs.readdir(dirPathDocument);
   const fileName = files[0];
 
+  console.log(files);
+
   const filePath = path.join(
     __dirname,
-    `../../../uploads/document/${fileName}`
+    `../../../uploads/document/loadDocuments/${fileName}`
   );
 
   if (!fileName) throw new Error("Ningun archivo guardado");
 
   if (files.length > 1) throw new Error("Mas de 1 archivo guardado ");
 
-  const workBook = await readExcelFile(filePath);
-
-  const productInfoAll = await parseExcelFile(workBook);
-
-  return productInfoAll;
+  return filePath;
 };
+
 module.exports = {
   startHandler,
 
-  getDataXlsx,
+  getFileXlsx,
 };

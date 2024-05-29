@@ -15,13 +15,13 @@ const getFileLink = async (ctx) => {
   return fileUrl;
 };
 
-const uploadFile = async (pathUpload, fileUrl, fileName) => {
+const uploadFile = async ({ pathUpload, URL, name }) => {
   const relativePath = path.join(__dirname, "../uploads", pathUpload);
 
-  const writer = fs.createWriteStream(`${relativePath}/${fileName}`); //Crea flujo de escritura en relativePath
+  const writer = fs.createWriteStream(`${relativePath}/${name}`); //Crea flujo de escritura en relativePath
 
   const stream = await axios({
-    url: fileUrl,
+    url: URL,
     method: "GET",
     responseType: "stream",
   });
@@ -34,7 +34,7 @@ const uploadFile = async (pathUpload, fileUrl, fileName) => {
   writer.on("finish", () => {
     writer.end();
   });
-  return `${relativePath}\\${fileName}`;
+  return `${relativePath}\\${name}`;
 };
 
 const downloadImage = async (fileUrl) => {
