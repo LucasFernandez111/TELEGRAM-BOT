@@ -1,7 +1,5 @@
 const fs = require("fs/promises");
 const path = require("path");
-const { getFileLink, uploadFile } = require("../../../utils/upload_file");
-const { readExcelFile, parseExcelFile } = require("./botAdmin_excel_services");
 const { welcomeMessage } = require("../utils/responses_en");
 const { Markup } = require("telegraf");
 
@@ -14,6 +12,7 @@ const startHandler = (ctx) => {
     Markup.inlineKeyboard([
       [Markup.button.callback(text_automatic, callback_automatic)],
       [Markup.button.callback(text_manual, callback_manual)],
+      [Markup.button.callback("Publicar productos 📌", "button_publish")],
     ])
   );
 };

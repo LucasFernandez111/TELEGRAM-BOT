@@ -1,5 +1,6 @@
 const XlsxPopulate = require("xlsx-populate");
 const path = require("path");
+const { dateMadrid } = require("../../../utils/date");
 
 const readExcelFile = async (filePath) => {
   const workBook = await XlsxPopulate.fromFileAsync(filePath);
@@ -59,17 +60,12 @@ const parseExcelFile = (workBook) => {
 
 const createNewExcel = async ({ products, yupooUrl }) => {
   try {
-    const date = new Date();
-    const options = { timeZone: "Europe/Madrid", hour12: false };
-    const dateString = date
-      .toLocaleDateString("es-ES", options)
-      .replace(/\//g, "-");
     const filePath = path.resolve(
       __dirname,
       "../../../uploads",
       "document",
-      "newDocuments",
-      `new-document-${dateString}.xlsx`
+      "new",
+      `new-document-${dateMadrid}.xlsx`
     );
 
     const workbook = await XlsxPopulate.fromBlankAsync();
@@ -93,8 +89,53 @@ const createNewExcel = async ({ products, yupooUrl }) => {
 
 const getElementsExcel = ({ workBook }) => {
   const sheet = workBook.sheet(0);
-  const data = sheet.range("A1:A5").values();
-  console.log(data);
+  const codes = sheet.range("A1:A5").value().flat();
+
+  const urls = sheet.range("B1:B5").value().flat();
+
+  const yupoo = [sheet.cell("C1").value()];
+
+  return {
+    codes,
+    urls,
+    yupoo,
+  };
+};
+
+const getOtherElementsExcel = ({ workBook }) => {
+  const sheet = workBook.sheet(0);
+  const lastCell = sheet.usedRange().endCell();
+
+  console.log(lastCell.value());
+
+  const lastRow = lastCell.rowNumber();
+
+  const codes = sheet.range(`A5:A${lastRow}`).value().flat();
+  const urls = sheet.range(`B5:B${lastRow}`).value().flat();
+  const yupoo = [sheet.cell("C1").value()];
+
+  return {
+    codes,
+    urls,
+    yupoo,
+    lastRow,
+  };
+};
+
+const updateExcel = ({ workBook, lastRow, codes, urls, path }) => {
+  const sheet = workBook.sheet(0);
+  const cellsA = sheet.range(`A1:A${lastRow}`).value(null);
+  const cellsB = sheet.range(`B1:B${lastRow}`).value(null);
+
+  cellsA.forEach((cell, index) => {
+    cell.value(codes[index]);
+  });
+
+  cellsB.forEach((cell, index) => {
+    cell.value(urls[index]);
+  });
+
+  return workBook.toFileAsync(path);
 };
 
 module.exports = {
@@ -102,4 +143,6 @@ module.exports = {
   parseExcelFile,
   createNewExcel,
   getElementsExcel,
+  getOtherElementsExcel,
+  updateExcel,
 };

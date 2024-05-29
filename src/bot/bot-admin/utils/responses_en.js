@@ -4,7 +4,7 @@ const messageEs = {
     startMessage:
       "¡Hola, *Alex*! Soy Jarvis 🤖, tu asistente personal exclusivo.\n\n📢¿Cómo prefieres cargar los productos?",
     keyBoard: {
-      text_automatic: "📄 Automático",
+      text_automatic: "📄 Estructurar excel",
       callback_automatic: "button_automatic",
       text_manual: "🤲 Manualmente",
       callback_manual: "manual",

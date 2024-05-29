@@ -6,8 +6,7 @@ const uploadMiddleware = (ctx) => {
   const typeXlsx =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   if (mime_type != typeXlsx) {
-    ctx.reply("El archivo no es un Excel xlsx");
-    return ctx.wizard.steps[ctx.wizard.cursor - 1](ctx);
+    throw Error("El archivo no es un Excel xlsx");
   }
 };
 
