@@ -1,68 +1,12 @@
 const { handleError } = require("../../../utils/error_handle");
-const { getInfoUser } = require("../../../utils/getInfoUser");
-const { responseMessage } = require("../services/botClient_services");
+const { sendAdminResponse } = require("../../bot-admin/services/messageAdmin");
 
 const {
-  menuMessage,
-  questionsMessage,
-  welcomeMessage,
-  infoMessage,
-} = require("../utils/responses_es"); // messages
-
-const {
-  menuKeyBoard,
-  questionsKeyBoard,
   questionsOthersKeyBoard,
   questionsKeyBoardReturn,
-  infoKeyBoard,
 } = require("../Views/keyboard"); //KeysBoard
 
-const handleStart = (ctx) => {
-  /**  /start */
-
-  try {
-    const { username } = getInfoUser(ctx);
-
-    ctx.replyWithMarkdown(welcomeMessage.startMessage(username));
-  } catch (error) {
-    handleError(ctx, error);
-  }
-};
-
-const handleButtonQuestions = (ctx) => {
-  /** Button Preguntas Frecuentes */
-  try {
-    ctx.answerCbQuery();
-    ctx.replyWithMarkdown(questionsMessage.message, questionsKeyBoard);
-  } catch (error) {
-    handleError(ctx, error);
-  }
-};
-
-const handleButtonInfo = (ctx) => {
-  /** Button Informacion Valiosa */
-
-  try {
-    ctx.answerCbQuery();
-    ctx.replyWithMarkdown(infoMessage.message, infoKeyBoard);
-  } catch (error) {
-    handleError(ctx, error);
-  }
-};
-
-const handleMenu = (ctx) => {
-  /**  /menu */
-  ctx.replyWithMarkdown(menuMessage.messageDos, menuKeyBoard);
-};
-
-const handleCustomQuestion = async (ctx) => {
-  /** Boton pregunta personalizada */
-
-  await ctx.scene.enter("sceneMessage");
-  await ctx.answerCbQuery();
-};
-
-const handleButtonCallBack = async (ctx) => {
+const handleButtonOptions = async (ctx) => {
   const callBackName = ctx.callbackQuery.data;
 
   ctx.answerCbQuery();
@@ -145,28 +89,21 @@ const handleButtonCallBack = async (ctx) => {
 
 const handleResponseMessage = async (ctx) => {
   try {
-    await responseMessage(ctx);
-  } catch (error) {
-    handleError(ctx, error);
-  }
-};
+    await sendAdminResponse({ message: ctx.message, telegram: ctx.telegram });
+    const confirmMessage = await ctx.reply("✅Mensaje enviado con exito!");
 
-const handleButtonReceipt = async (ctx) => {
-  try {
-    await ctx.scene.enter("sceneGetReceipt");
-    await ctx.answerCbQuery();
+    setTimeout(() => {
+      ctx.telegram.deleteMessage(
+        confirmMessage.chat.id,
+        confirmMessage.message_id
+      );
+    }, 3000);
   } catch (error) {
     handleError(ctx, error);
   }
 };
 
 module.exports = {
-  handleStart,
-  handleMenu,
-  handleButtonInfo,
-  handleButtonQuestions,
-  handleButtonCallBack,
-  handleCustomQuestion,
+  handleButtonOptions,
   handleResponseMessage,
-  handleButtonReceipt,
 };

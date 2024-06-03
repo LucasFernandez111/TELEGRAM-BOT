@@ -1,70 +1,6 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-const messageMap = new Map();
-
-const sendMessageUser = async ({ message, telegram }) => {
-  try {
-    if (!message || !message.from || !message.text) {
-      throw new Error(
-        "Mensaje no válido o incompleto, presione el botton nuevamente!."
-      );
-    }
-
-    const ID_CHAT_ALEX = process.env.ID_CHAT_ALEX;
-    const sender = message.from.username || message.from.first_name;
-    const messageUser = message.text;
-    const userId = message.from.id;
-
-    const date = new Date();
-    const options = { timeZone: "Europe/Madrid", hour12: false };
-    const horaEspaña = date.toLocaleString("es-ES", options);
-
-    const sentMessage = await telegram.sendMessage(
-      ID_CHAT_ALEX,
-      `📬¡Nuevo mensaje de *${sender}*!\n\n📩 Mensaje:*\n${messageUser}* \n\nFECHA:${horaEspaña}`,
-      {
-        parse_mode: "Markdown",
-      }
-    );
-
-    messageMap.set(sentMessage.message_id, { userId, messageUser, sender });
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
-/**CAMBIAR ID DE ALEXXXXXXX */
-const responseMessage = async (ctx) => {
-  const isResMessage = ctx.message.reply_to_message;
-
-  if (!isResMessage) return;
-
-  const repliedMessageId = ctx.message.reply_to_message.message_id;
-  const adminResponse = ctx.message.text;
-  const messageInfo = messageMap.get(repliedMessageId);
-  if (!messageInfo) throw Error("Mensaje ya respondido! ");
-  const { messageUser, sender } = messageInfo;
-
-  await ctx.telegram.sendMessage(
-    963702071,
-    `¡Hola *${sender}*!,\n\n✅ Su consulta ha sido atendida con éxito.\n\n❓: ${messageUser} \n\n📨 Respuesta: \n- *${adminResponse}*`,
-    {
-      parse_mode: "Markdown",
-    }
-  );
-
-  const confirmMessage = await ctx.reply("✅Mensaje enviado con exito!");
-
-  setTimeout(() => {
-    ctx.telegram.deleteMessage(
-      confirmMessage.chat.id,
-      confirmMessage.message_id
-    );
-  }, 3000);
-
-  messageMap.delete(repliedMessageId);
-};
 
 const sendReceipt = async (ctx, chat_id, data, file_name) => {
   ctx.telegram.sendDocument(process.env.ID_CHAT_ALEX, {
@@ -128,8 +64,6 @@ const uploadFile = async ({ message, telegram }) => {
 };
 
 module.exports = {
-  sendMessageUser,
-  responseMessage,
   sendReceipt,
   uploadFile,
 };

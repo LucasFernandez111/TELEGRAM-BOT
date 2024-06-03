@@ -37,29 +37,4 @@ const uploadFile = async ({ pathUpload, URL, name }) => {
   return `${relativePath}\\${name}`;
 };
 
-const downloadImage = async (fileUrl) => {
-  const fileNameSplit = fileUrl.split("/");
-  const fileName = fileNameSplit.slice(-1)[0];
-
-  const relativePath = path.join(
-    __dirname,
-    `../images/${fileName.replace(".webp", ".jpg")}`
-  );
-  const writer = fs.createWriteStream(relativePath);
-
-  const response = await axios({
-    url: fileUrl,
-    method: "GET",
-    responseType: "stream",
-  });
-
-  response.data.pipe(writer);
-
-  writer.on("error", () => {
-    throw Error(`${"🚫"}*Error al guardar el archivo*`);
-  });
-
-  return relativePath;
-};
-
-module.exports = { getFileLink, downloadImage, uploadFile };
+module.exports = { getFileLink, uploadFile };

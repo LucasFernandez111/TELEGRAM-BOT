@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon  ./src/utils/prueba.js",
     "dev": "nodemon --env-file=.env ./src/index.js",
-    "debugger": "nodemon --env-file=.env ./src/utils/scraping.js"
+    "test": "nodemon --env-file=.env C:\\Users\\Lucas\\Desktop\\TELEGRAM-BOT\\src\\bot\\bot-admin\\services\\scenes.js"
   },
   "keywords": [],
   "author": "",

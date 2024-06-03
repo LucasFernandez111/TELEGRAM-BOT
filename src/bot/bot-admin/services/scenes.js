@@ -3,17 +3,20 @@ const { uploadMiddleware } = require("../middleware/botAdmin_middleware");
 const { getFileLink, uploadFile } = require("../../../utils/upload_file");
 const {
   readExcelFile,
-  parseExcelFile,
+  getSheetData,
   createNewExcel,
   getElementsExcel,
   getOtherElementsExcel,
   updateExcel,
+  getLinkYupoo,
 } = require("./botAdmin_excel_services");
 const { deleteAllFile } = require("../../../utils/files");
 const path = require("path");
 
-const { dateMadrid } = require("../../../utils/date");
 const { handleError } = require("../../../utils/error_handle");
+const { getPageData, getImagePage } = require("../../../utils/scraping");
+const { formatToSend } = require("./botAdmin_services");
+const { uploadsBasePath, dateMadrid } = require("../../../utils/config");
 
 const getDocument = new Scenes.WizardScene(
   "get_document_scene",
@@ -28,33 +31,40 @@ const getDocument = new Scenes.WizardScene(
       uploadMiddleware(ctx);
       const fileLink = await getFileLink(ctx); // Link Telegram file
 
-      const excelPath = await uploadFile({
+      const pathExcel = await uploadFile({
         pathUpload: "/document/load",
         URL: fileLink,
         name: "document.xlsx",
       }); //upload File
 
+      const workBook = await readExcelFile(pathExcel);
+      deleteAllFile({
+        relativePath: path.dirname(pathExcel),
+      });
+
+      const linkYupoo = getLinkYupoo(workBook);
+
+      const sheetData = getSheetData(workBook); // formatea Excel original
+
       ctx.reply("¡Excel cargado con éxito! ✅📊!");
 
-      const workBook = await readExcelFile(excelPath); // Obtiene el workBook del documento original
+      const pathFile = path.resolve(
+        uploadsBasePath,
+        "document",
+        "new",
+        `new-document-${dateMadrid}.xlsx`
+      );
 
-      const products = await parseExcelFile(workBook); // Parsea Excel original
-
-      const pathNewExcel = await createNewExcel(products);
       ctx.reply("Creando un nuevo archivo Excel... 📊✨");
+
+      const pathNewExcel = await createNewExcel({
+        products: sheetData,
+        linkYupoo,
+        pathFile,
+      });
+
       await ctx.replyWithDocument({
         source: pathNewExcel,
-      });
-
-      const newExcelPathDir = path.dirname(pathNewExcel);
-      const excelPathDir = path.dirname(excelPath);
-
-      deleteAllFile({
-        relativePath: newExcelPathDir,
-      });
-
-      deleteAllFile({
-        relativePath: excelPathDir,
       });
 
       ctx.scene.leave();
@@ -91,23 +101,43 @@ const publishElements = new Scenes.WizardScene(
 
       const { codes, urls, lastRow } = getOtherElementsExcel({ workBook }); //Elementos a guardar
 
-      await updateExcel({
-        workBook,
-        codes,
-        urls,
-        lastRow,
-        path: `${pathDirExcel}/${file_id}.xlsx`,
+      // await updateExcel({
+      //   workBook,
+      //   codes,
+      //   urls,
+      //   lastRow,
+      //   path: `${pathDirExcel}/${file_id}.xlsx`,
+      // });
+
+      const productsAli = await getPageData(products.urls, products.codes, ctx);
+
+      // if (productsAli.length == 0)
+      //   throw Error("No se pudo completar la publicaciones...");
+
+      const productsYupoo = await getPageData(products.yupoo, products.codes);
+
+      const pathImages = await getImagePage({
+        urls: productsYupoo,
       });
 
-      await ctx.replyWithDocument({
-        source: `${pathDirExcel}/${file_id}.xlsx`,
-      });
+      console.log({ products, productsAli, productsYupoo, pathImages });
+
+      // await ctx.replyWithDocument({
+      //   source: `${pathDirExcel}/${file_id}.xlsx`,
+      // });
+
+      // await formatToSend(products, productsYupoo, listpath);
 
       await deleteAllFile({ relativePath: pathDirExcel });
+
+      // await deleteAllFile({
+      //   relativePath: path.resolve(__dirname, "../../../uploads", "images"),
+      // });
       ctx.wizard.next();
     } catch (error) {
+      ctx.reply("Vuelve a intentarlo..");
+      ctx.scene.leave();
       handleError(ctx, error);
-      ctx.scene.reenter();
     }
   }
 );

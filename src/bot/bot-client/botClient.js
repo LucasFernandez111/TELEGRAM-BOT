@@ -1,27 +1,24 @@
-const { Telegraf, Scenes, session } = require("telegraf");
-const botClientController = require("./controller/botClient_controller");
+const { Telegraf, session } = require("telegraf");
+const actionController = require("./controller/actionController");
+const commandController = require("./controller/commandController");
+const onController = require("./controller/onController");
 const { infoMessage } = require("./utils/responses_es");
-const { sceneMessage, sceneGetReceipt } = require("./services/scenes");
 const { blockOtherHandlers } = require("./middleware/scenes_midleware");
+const stage = require("./services/scenes");
+
 const botClient = new Telegraf(process.env.TOKEN_BOT_CLIENT);
-const stage = new Scenes.Stage([sceneMessage, sceneGetReceipt]);
 
 botClient.use(session());
-
 botClient.use(stage.middleware());
-
 botClient.use(blockOtherHandlers);
-botClient.start(botClientController.handleStart);
 
-botClient.command("menu", botClientController.handleMenu);
+botClient.start(commandController.handleStart);
+botClient.command("menu", commandController.handleMenu);
 
-botClient.action("receipt", botClientController.handleButtonReceipt);
-
-botClient.action("questions", botClientController.handleButtonQuestions);
-botClient.action("information", botClientController.handleButtonInfo);
-botClient.on("text", botClientController.handleResponseMessage);
-
-botClient.action("custom_question", botClientController.handleCustomQuestion);
+botClient.action("receipt", actionController.handleButtonReceipt);
+botClient.action("questions", actionController.handleButtonQuestions);
+botClient.action("information", actionController.handleButtonInfo);
+botClient.action("custom_question", actionController.handleCustomQuestion);
 
 infoMessage.keyboard.text_options.forEach((option, index) => {
   botClient.action(`OPTION_${index}`, (ctx) => {
@@ -29,6 +26,7 @@ infoMessage.keyboard.text_options.forEach((option, index) => {
   });
 });
 
-botClient.on("callback_query", botClientController.handleButtonCallBack);
+botClient.on("reply_to_message", onController.handleResponseMessage);
+botClient.on("callback_query", onController.handleButtonOptions);
 
 module.exports = botClient;

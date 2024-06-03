@@ -1,6 +1,6 @@
 const botGroup = require("../botGroup");
 
-const sendPost = async ({ title, url, price, imgPath }) => {
+const sendPost = async ({ title, urlAli, urlYupoo, price, pathImg }) => {
   let retries = 0;
   let maxRetries = 3;
 
@@ -9,7 +9,7 @@ const sendPost = async ({ title, url, price, imgPath }) => {
       response = await botGroup.telegram.sendPhoto(
         "@glgekGLf",
         {
-          source: imgPath,
+          source: pathImg,
         },
         {
           caption: `<b>🔥${title}🔥</b>
@@ -21,7 +21,10 @@ const sendPost = async ({ title, url, price, imgPath }) => {
           \n🚫OFERTA LIMITADA DE ESTE CANAL DE VENTAS🚫\n\nPara continuar, puedes dirigirte al bot @Joselu_asistente_bot 🤖`,
           parse_mode: "HTML",
           reply_markup: {
-            inline_keyboard: [[{ text: "Ver Producto", url: `${url}` }]],
+            inline_keyboard: [
+              [{ text: "Ver Producto", url: `${urlAli}` }],
+              [{ text: "Mas imagenes", url: `${urlYupoo}` }],
+            ],
           },
         }
       );

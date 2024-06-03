@@ -1,6 +1,6 @@
 const XlsxPopulate = require("xlsx-populate");
 const path = require("path");
-const { dateMadrid } = require("../../../utils/date");
+const { dateMadrid } = require("../../../utils/config");
 
 const readExcelFile = async (filePath) => {
   const workBook = await XlsxPopulate.fromFileAsync(filePath);
@@ -10,81 +10,46 @@ const readExcelFile = async (filePath) => {
   return workBook;
 };
 
-const parseExcelFile = (workBook) => {
-  let products = [];
-
+const getSheetData = (workBook) => {
   const sheetNames = workBook.sheets().map((sheet) => sheet.name());
-  const yupooUrl = workBook.sheet(0).cell("C1").value();
 
-  if (!yupooUrl) {
-    throw Error("No se encontro la URL de yupoo en ('C1') !");
-  }
+  if (sheetNames.length == 0) throw Error("No existe ninguna sheet...");
 
-  if (!yupooUrl.includes("yupoo.com"))
-    throw Error("No es una URL de yupoo en ('C1')!");
+  const sheetsData = sheetNames
+    .map((sheetName) => {
+      const sheet = workBook.sheet(sheetName);
 
-  sheetNames.forEach((name) => {
-    const sheet = workBook.sheet(name);
+      const range = sheet.usedRange();
 
-    const usedRange = sheet.usedRange();
-    if (!usedRange) {
-      throw new Error(`No se pudo obtener el rango usado de la hoja ${name}`);
-    }
+      if (!range) throw Error(`No hay ningun dato en la sheet: ${sheetName}`);
+      const lastCell = range.endCell();
 
-    const res = usedRange.value().map((row) => {
-      if (!row) return [];
+      const lastRow = lastCell.rowNumber();
 
-      const filteredRow = row.filter((value) => value !== undefined);
+      const codes = sheet
+        .range(`A2:A${lastRow}`)
+        .value()
+        .flat()
+        .filter((code) => code != undefined);
+      const urls = sheet
+        .range(`B2:B${lastRow}`)
+        .value()
+        .flat()
+        .filter((code) => code != undefined);
 
-      const code = filteredRow[0];
-      const url = filteredRow[1]?.split("?", 1)[0];
+      if (codes.length != urls.length)
+        throw Error(
+          `El numero de codigos no coicide con los link de la sheet : ${sheetName}`
+        );
 
       return {
-        code,
-        url,
+        codes,
+        urls,
       };
-    });
+    })
+    .flat();
 
-    const filteredRes = res
-      .slice(1)
-      .filter((obj) => obj.code !== undefined || obj.url !== undefined);
-
-    filteredRes.forEach((product) => products.push(product));
-  });
-
-  return {
-    products,
-    yupooUrl,
-  };
-};
-
-const createNewExcel = async ({ products, yupooUrl }) => {
-  try {
-    const filePath = path.resolve(
-      __dirname,
-      "../../../uploads",
-      "document",
-      "new",
-      `new-document-${dateMadrid}.xlsx`
-    );
-
-    const workbook = await XlsxPopulate.fromBlankAsync();
-
-    const sheet = workbook.sheet(0);
-
-    products.forEach(({ code, url }, i) => {
-      const row = i + 1;
-      sheet.cell(`A${row}`).value(code);
-      sheet.cell(`B${row}`).value(url);
-    });
-    sheet.cell("C1").value(yupooUrl);
-
-    await workbook.toFileAsync(filePath);
-
-    return filePath;
-  } catch (error) {
-    throw Error("Error al crear el archivo Excel");
-  }
+  return sheetsData;
 };
 
 const getElementsExcel = ({ workBook }) => {
@@ -106,8 +71,6 @@ const getOtherElementsExcel = ({ workBook }) => {
   const sheet = workBook.sheet(0);
   const lastCell = sheet.usedRange().endCell();
 
-  console.log(lastCell.value());
-
   const lastRow = lastCell.rowNumber();
 
   const codes = sheet.range(`A5:A${lastRow}`).value().flat();
@@ -120,6 +83,37 @@ const getOtherElementsExcel = ({ workBook }) => {
     yupoo,
     lastRow,
   };
+};
+
+const getLinkYupoo = (workBook) => {
+  const firstSheet = workBook.sheet(0);
+  const linkYupoo = firstSheet.cell("C1").value();
+
+  if (!linkYupoo) throw Error('No hay datos en la celda *"C1"*...');
+
+  if (typeof linkYupoo == "object")
+    throw Error('La celda *"C1"* tiene un formato no valido..');
+
+  if (!linkYupoo.includes("yupoo.com"))
+    throw Error('No es una URL de yupoo en *"C1"*!');
+
+  return linkYupoo;
+};
+
+const createNewExcel = async ({ products, linkYupoo, pathFile }) => {
+  const newWorkbook = await XlsxPopulate.fromBlankAsync();
+  const sheet = newWorkbook.sheet(0);
+  sheet.cell("C1").value(linkYupoo);
+
+  products.forEach(({ codes, urls }) => {
+    codes.forEach((code, index) => sheet.cell(`A${index + 1}`).value(code));
+
+    urls.forEach((url, index) => sheet.cell(`B${index + 1}`).value(url));
+  });
+
+  await newWorkbook.toFileAsync(pathFile);
+
+  return pathFile;
 };
 
 const updateExcel = ({ workBook, lastRow, codes, urls, path }) => {
@@ -140,9 +134,10 @@ const updateExcel = ({ workBook, lastRow, codes, urls, path }) => {
 
 module.exports = {
   readExcelFile,
-  parseExcelFile,
+  getSheetData,
   createNewExcel,
   getElementsExcel,
   getOtherElementsExcel,
   updateExcel,
+  getLinkYupoo,
 };
