@@ -73,8 +73,8 @@ const getOtherElementsExcel = ({ workBook }) => {
 
   const lastRow = lastCell.rowNumber();
 
-  const codes = sheet.range(`A5:A${lastRow}`).value().flat();
-  const urls = sheet.range(`B5:B${lastRow}`).value().flat();
+  const codes = sheet.range(`A6:A${lastRow}`).value().flat();
+  const urls = sheet.range(`B6:B${lastRow}`).value().flat();
   const yupoo = [sheet.cell("C1").value()];
 
   return {
@@ -89,13 +89,13 @@ const getLinkYupoo = (workBook) => {
   const firstSheet = workBook.sheet(0);
   const linkYupoo = firstSheet.cell("C1").value();
 
-  if (!linkYupoo) throw Error('No hay datos en la celda *"C1"*...');
+  if (!linkYupoo) throw Error('No hay datos en la celda "C1"...');
 
   if (typeof linkYupoo == "object")
-    throw Error('La celda *"C1"* tiene un formato no valido..');
+    throw Error('La celda "C1" tiene un formato no valido..');
 
   if (!linkYupoo.includes("yupoo.com"))
-    throw Error('No es una URL de yupoo en *"C1"*!');
+    throw Error('No es una URL de yupoo en "C1"!');
 
   return linkYupoo;
 };

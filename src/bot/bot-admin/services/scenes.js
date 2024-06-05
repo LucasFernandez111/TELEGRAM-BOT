@@ -12,11 +12,11 @@ const {
 } = require("./botAdmin_excel_services");
 const { deleteAllFile } = require("../../../utils/files");
 const path = require("path");
-
 const { handleError } = require("../../../utils/error_handle");
 const { getPageData, getImagePage } = require("../../../utils/scraping");
 const { formatToSend } = require("./botAdmin_services");
 const { uploadsBasePath, dateMadrid } = require("../../../utils/config");
+const { sendPost } = require("../../bot-group/services/botGroup_services");
 
 const getDocument = new Scenes.WizardScene(
   "get_document_scene",
@@ -101,39 +101,65 @@ const publishElements = new Scenes.WizardScene(
 
       const { codes, urls, lastRow } = getOtherElementsExcel({ workBook }); //Elementos a guardar
 
-      // await updateExcel({
-      //   workBook,
-      //   codes,
-      //   urls,
-      //   lastRow,
-      //   path: `${pathDirExcel}/${file_id}.xlsx`,
-      // });
+      console.log({
+        codes: codes.length,
+      });
+
+      const messageProgress = await ctx.reply("🔄 Obteniendo productos...");
+
+      await updateExcel({
+        workBook,
+        codes,
+        urls,
+        lastRow,
+        path: `${pathDirExcel}/${file_id}.xlsx`,
+      });
 
       const productsAli = await getPageData(products.urls, products.codes, ctx);
 
-      // if (productsAli.length == 0)
-      //   throw Error("No se pudo completar la publicaciones...");
+      if (productsAli.length == 0)
+        throw Error("No se pudo completar la publicaciones...");
 
       const productsYupoo = await getPageData(products.yupoo, products.codes);
 
-      const pathImages = await getImagePage({
+      const listpath = await getImagePage({
         urls: productsYupoo,
       });
 
-      console.log({ products, productsAli, productsYupoo, pathImages });
+      await ctx.telegram.editMessageText(
+        ctx.chat.id,
+        messageProgress.message_id,
+        null,
+        "📢 Publicando..."
+      );
+      const productsFormated = await formatToSend({
+        productsAli,
+        productsYupoo,
+        listpath,
+      });
 
-      // await ctx.replyWithDocument({
-      //   source: `${pathDirExcel}/${file_id}.xlsx`,
-      // });
+      await Promise.all(
+        productsFormated.map(async (product) => await sendPost(product))
+      );
 
-      // await formatToSend(products, productsYupoo, listpath);
+      await ctx.replyWithDocument({
+        source: `${pathDirExcel}/${file_id}.xlsx`,
+      });
 
       await deleteAllFile({ relativePath: pathDirExcel });
 
-      // await deleteAllFile({
-      //   relativePath: path.resolve(__dirname, "../../../uploads", "images"),
-      // });
-      ctx.wizard.next();
+      await deleteAllFile({
+        relativePath: path.resolve(__dirname, "../../../uploads", "images"),
+      });
+
+      await ctx.telegram.editMessageText(
+        ctx.chat.id,
+        messageProgress.message_id,
+        null,
+        "✅ Productos Publicados"
+      );
+
+      ctx.scene.leave();
     } catch (error) {
       ctx.reply("Vuelve a intentarlo..");
       ctx.scene.leave();

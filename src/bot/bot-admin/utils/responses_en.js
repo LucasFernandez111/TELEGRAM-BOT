@@ -2,7 +2,7 @@ const messageEs = {
   publishMessage: {},
   welcomeMessage: {
     startMessage:
-      "¡Hola, *Alex*! Soy Jarvis 🤖, tu asistente personal exclusivo.\n\n📢¿Cómo prefieres cargar los productos?",
+      "¡Hola, *Alex*! Soy Jarvis 🤖, tu asistente personal exclusivo.\n\n¿Qué deseas realizar? 📝🔍",
     keyBoard: {
       text_automatic: "📄 Estructurar excel",
       callback_automatic: "button_automatic",

@@ -54,7 +54,7 @@ const taskAliexpress = async (page, url, cookies) => {
   );
 
   page.removeAllListeners("request");
-  return { title, price, url };
+  return { title, price, urlAli: url };
 };
 
 /**

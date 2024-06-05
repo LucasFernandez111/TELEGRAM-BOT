@@ -1,8 +1,8 @@
 const { Telegraf, session } = require("telegraf");
 const { startHandler } = require("./services/botAdmin_services");
 const botAdminController = require("./controller/botAdmin_controller");
-const { uploadMiddleware } = require("./middleware/botAdmin_middleware");
 const stage = require("./services/scenes");
+const { isAdmin } = require("./middleware/authMiddleware");
 
 const botAdmin = new Telegraf(process.env.TOKEN_BOT_ADMIN);
 
@@ -10,6 +10,7 @@ botAdmin.use(session());
 
 botAdmin.use(stage.middleware());
 
+botAdmin.use(isAdmin);
 botAdmin.start(startHandler);
 
 // ACTIONS

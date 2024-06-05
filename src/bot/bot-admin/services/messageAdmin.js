@@ -1,4 +1,3 @@
-const botClient = require("../../bot-client/botClient");
 const { messageMap } = require("../../bot-client/services/messageSender");
 
 const sendAdminResponse = async ({ message, telegram }) => {

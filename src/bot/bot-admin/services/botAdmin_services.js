@@ -39,53 +39,15 @@ const getFileXlsx = async (ctx) => {
   return filePath;
 };
 
-const formatToSend = (productsAli, productsYupoo, listpath) => {};
+const formatToSend = ({ productsAli, productsYupoo, listpath }) =>
+  productsAli.map((product, index) => ({
+    ...product,
+    urlYupoo: productsYupoo[index].href,
+    pathImage: listpath[index],
+  }));
 
-formatToSend(
-  {
-    codes: ["B2334", "B2392", "B3174", "B3190", "B3233"],
-    urls: [
-      "https://www.aliexpress.com/item/3256806852442201.html",
-      "https://www.aliexpress.com/item/3256806852689975.html",
-      "https://www.aliexpress.com/item/3256806852799850.html",
-      "https://www.aliexpress.com/item/3256806852812869.html",
-      "https://www.aliexpress.com/item/3256806852911819.html",
-    ],
-    yupoo: ["https://zxd1688.x.yupoo.com/"],
-  },
-  [
-    {
-      titleCode: "B2334",
-      href: "https://zxd1688.x.yupoo.com/albums/164475814?uid=1",
-    },
-    {
-      titleCode: "B2392",
-      href: "https://zxd1688.x.yupoo.com/albums/164475821?uid=1",
-    },
-    {
-      titleCode: "B3174",
-      href: "https://zxd1688.x.yupoo.com/albums/164475828?uid=1",
-    },
-    {
-      titleCode: "B3190",
-      href: "https://zxd1688.x.yupoo.com/albums/164475831?uid=1",
-    },
-    {
-      titleCode: "B3233",
-      href: "https://zxd1688.x.yupoo.com/albums/164475836?uid=1",
-    },
-  ],
-  [
-    "C:\\Users\\Lucas\\Desktop\\TELEGRAM-BOT\\src\\uploads\\images\\164475821.png",
-    "C:\\Users\\Lucas\\Desktop\\TELEGRAM-BOT\\src\\uploads\\images\\164475814.png",
-    "C:\\Users\\Lucas\\Desktop\\TELEGRAM-BOT\\src\\uploads\\images\\164475828.png",
-    "C:\\Users\\Lucas\\Desktop\\TELEGRAM-BOT\\src\\uploads\\images\\164475831.png",
-    "C:\\Users\\Lucas\\Desktop\\TELEGRAM-BOT\\src\\uploads\\images\\164475836.png",
-  ]
-);
 module.exports = {
   startHandler,
-
   getFileXlsx,
   formatToSend,
 };

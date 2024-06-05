@@ -5,7 +5,7 @@ const messageEs = {
     startMessage: (username) =>
       `Hola! *${
         username || "Amig@"
-      }* 😊 Soy Joselu, TU ASISTENTE PERSONAL.\nEstoy aquí para ayudarte.\n\nSi necesitas algo, no dudes en preguntarme. 🤖 (/menu)`,
+      }* 😊 Soy Joselu el BOT personal del Grupo (Nombre del grupo de telegram).\nEstoy aquí para ayudarte.\n\nSi necesitas algo, no dudes en preguntarme. 🤖 (/menu)`,
   },
 
   menuMessage: {
