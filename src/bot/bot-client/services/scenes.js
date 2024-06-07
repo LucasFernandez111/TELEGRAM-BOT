@@ -1,6 +1,5 @@
 const { Scenes } = require("telegraf");
-const { uploadFile, sendReceipt } = require("./botClient_services");
-// const fs = require("fs/promises");
+
 const { senderMessage } = require("./messageSender");
 const { handleError } = require("../../../utils/error_handle");
 
@@ -40,35 +39,45 @@ const questionMessage = new Scenes.WizardScene(
   }
 );
 
-// const sceneGetReceipt = new Scenes.WizardScene(
-//   "sceneGetReceipt",
-//   (ctx) => {
-//     ctx.reply(`🧾Por favor envia el comprobante a continuacion`);
-//     ctx.wizard.state.timeout = setTimeout(() => {
-//       ctx.reply(
-//         "Tiempo de espera para comprobante agotado. Por favor, intenta nuevamente."
-//       );
-//       ctx.scene.leave();
-//     }, 60000);
-//     ctx.wizard.next();
-//   },
+const getReceipt = new Scenes.WizardScene(
+  "scene_get_receipt",
+  (ctx) => {
+    ctx.reply(`🧾Por favor envia el comprobante a continuacion`);
+    ctx.wizard.state.timeout = setTimeout(() => {
+      ctx.reply(
+        "Tiempo de espera para comprobante agotado. Por favor, intenta nuevamente."
+      );
+      ctx.scene.leave();
+    }, 30000);
+    ctx.wizard.next();
+  },
 
-//   async (ctx) => {
-//     try {
-//       clearTimeout(ctx.wizard.state.timeout);
-//       const chat_id = ctx.from.id;
+  async (ctx) => {
+    try {
+      clearTimeout(ctx.wizard.state.timeout);
+      const fileId = ctx.update.message.document.file_id;
 
-//       const { fileName, filePath } = await uploadFile(ctx);
+      await ctx.sendDocument(process.env.ID_CHAT_ALEX, {
+        document: fileId,
+      });
 
-//       const data = await fs.readFile(filePath);
+      const confirmMessage = await ctx.reply(
+        "✅Comprobante enviado correctamente!"
+      );
 
-//       await sendReceipt(ctx, chat_id, data, fileName);
-//     } catch {
-//       ctx.reply("Documento no recibido!, intentelo nuevamente");
-//     } finally {
-//       ctx.scene.leave();
-//     }
-//   }
-// );
+      setTimeout(() => {
+        ctx.telegram.deleteMessage(
+          confirmMessage.chat.id,
+          confirmMessage.message_id
+        );
+      }, 4500);
+    } catch (err) {
+      handleError(ctx, err);
+      ctx.scene.reenter();
+    } finally {
+      ctx.scene.leave();
+    }
+  }
+);
 
-module.exports = new Scenes.Stage([questionMessage]);
+module.exports = new Scenes.Stage([questionMessage, getReceipt]);
