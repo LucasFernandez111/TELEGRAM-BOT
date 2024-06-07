@@ -1,6 +1,6 @@
 const { Telegraf, session } = require("telegraf");
 const { startHandler } = require("./services/botAdmin_services");
-const botAdminController = require("./controller/botAdmin_controller");
+const actionController = require("./controller/action");
 const stage = require("./services/scenes");
 const { isAdmin } = require("./middleware/authMiddleware");
 
@@ -14,8 +14,7 @@ botAdmin.use(isAdmin);
 botAdmin.start(startHandler);
 
 // ACTIONS
-botAdmin.action("button_automatic", botAdminController.handleButtonAutomatic);
-botAdmin.action("button_no_publish", botAdminController.handleButtonDelete);
-botAdmin.action("button_publish", botAdminController.handleButtonPublish);
+botAdmin.action("button_automatic", actionController.handleButtonAutomatic);
+botAdmin.action("button_publish", actionController.handleButtonPublish);
 
 module.exports = botAdmin;
