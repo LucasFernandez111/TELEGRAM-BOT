@@ -1,5 +1,5 @@
 const { Scenes } = require("telegraf");
-const { uploadMiddleware } = require("../middleware/botAdmin_middleware");
+const { uploadMiddleware } = require("../middleware/uploadMiddleware");
 const { getFileLink, uploadFile } = require("../../../utils/upload_file");
 const {
   readExcelFile,
@@ -16,18 +16,25 @@ const { handleError } = require("../../../utils/error_handle");
 const { getPageData, getImagePage } = require("../../../utils/scraping");
 const { formatToSend } = require("./botAdmin_services");
 const { uploadsBasePath, dateMadrid } = require("../../../utils/config");
-const { sendPost } = require("../../bot-group/services/botGroup_services");
+const { sendPost } = require("./publishPost");
 
 const getDocument = new Scenes.WizardScene(
   "get_document_scene",
   (ctx) => {
     ctx.reply("📎 Envía adjunto el archivo Excel");
 
+    ctx.wizard.state.timeout = setTimeout(() => {
+      ctx.reply(
+        "Tiempo de espera para el archivo. Por favor, intenta nuevamente."
+      );
+      ctx.scene.leave();
+    }, 20000);
     ctx.wizard.next();
   },
 
   async (ctx) => {
     try {
+      clearTimeout(ctx.wizard.state.timeout);
       uploadMiddleware(ctx);
       const fileLink = await getFileLink(ctx); // Link Telegram file
 
@@ -80,10 +87,17 @@ const publishElements = new Scenes.WizardScene(
   "publish_elements_scene",
   (ctx) => {
     ctx.replyWithMarkdownV2("Ajunta archivo *EXCEL* para ser publicada 📢");
+    ctx.wizard.state.timeout = setTimeout(() => {
+      ctx.reply(
+        "Tiempo de espera para el archivo. Por favor, intenta nuevamente."
+      );
+      ctx.scene.leave();
+    }, 20000);
     ctx.wizard.next();
   },
   async (ctx) => {
     try {
+      clearTimeout(ctx.wizard.state.timeout);
       await uploadMiddleware(ctx);
       const { file_id } = ctx.update.message.document;
       const fileLink = await getFileLink(ctx); // Link Telegram file
@@ -100,10 +114,6 @@ const publishElements = new Scenes.WizardScene(
       const products = getElementsExcel({ workBook }); //Elementos a publicar
 
       const { codes, urls, lastRow } = getOtherElementsExcel({ workBook }); //Elementos a guardar
-
-      console.log({
-        codes: codes.length,
-      });
 
       const messageProgress = await ctx.reply("🔄 Obteniendo productos...");
 
