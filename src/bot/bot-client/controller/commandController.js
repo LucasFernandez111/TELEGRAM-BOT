@@ -1,5 +1,4 @@
 const { handleError } = require("../../../utils/error_handle");
-const { getInfoUser } = require("../../../utils/getInfoUser");
 
 const { menuMessage, welcomeMessage } = require("../utils/responses_es"); // messages
 
@@ -9,7 +8,7 @@ const handleStart = (ctx) => {
   /**  /start */
 
   try {
-    const { username } = getInfoUser(ctx);
+    const username = ctx.from.username | "Amig@";
 
     ctx.replyWithMarkdown(welcomeMessage.startMessage(username));
   } catch (error) {
