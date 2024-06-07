@@ -17,7 +17,10 @@ const senderMessage = async ({ chatId, message, telegram }) => {
     {
       parse_mode: "Markdown",
       reply_markup: {
-        inline_keyboard: [[{ text: "Bloquear 🚫", callback_data: "boton1" }]],
+        inline_keyboard: [
+          [{ text: "Bloquear 🚫", callback_data: "block_user" }],
+          [{ text: "Desbloquear 🔓", callback_data: "unlock_user" }],
+        ],
       },
     }
   );
