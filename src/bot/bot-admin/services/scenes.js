@@ -9,7 +9,7 @@ const {
   getOtherElementsExcel,
   updateExcel,
   getLinkYupoo,
-} = require("./botAdmin_excel_services");
+} = require("./excelHandler");
 const { deleteAllFile } = require("../../../utils/files");
 const path = require("path");
 const { handleError } = require("../../../utils/error_handle");

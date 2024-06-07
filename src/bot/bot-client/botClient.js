@@ -4,7 +4,6 @@ const actionController = require("./controller/actionController");
 const commandController = require("./controller/commandController");
 const onController = require("./controller/onController");
 const { infoMessage } = require("./utils/responses_es");
-const { blockOtherHandlers } = require("./middleware/scenes_midleware");
 const stage = require("./services/scenes");
 const { checkBlockedUser } = require("./middleware/moderation");
 
@@ -13,7 +12,6 @@ const botClient = new Telegraf(process.env.TOKEN_BOT_CLIENT);
 botClient.use(checkBlockedUser);
 botClient.use(session());
 botClient.use(stage.middleware());
-botClient.use(blockOtherHandlers);
 
 botClient.start(commandController.handleStart);
 botClient.command("menu", commandController.handleMenu);

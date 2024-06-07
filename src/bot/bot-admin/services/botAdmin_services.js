@@ -5,8 +5,7 @@ const { Markup } = require("telegraf");
 
 const startHandler = (ctx) => {
   const { startMessage, keyBoard } = welcomeMessage;
-  const { text_manual, text_automatic, callback_automatic, callback_manual } =
-    keyBoard;
+  const { text_automatic, callback_automatic } = keyBoard;
   ctx.replyWithMarkdown(
     startMessage,
     Markup.inlineKeyboard([
@@ -24,8 +23,6 @@ const getFileXlsx = async (ctx) => {
 
   const files = await fs.readdir(dirPathDocument);
   const fileName = files[0];
-
-  console.log(files);
 
   const filePath = path.join(
     __dirname,
