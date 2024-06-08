@@ -2,6 +2,7 @@ const { Scenes } = require("telegraf");
 
 const { senderMessage } = require("./messageSender");
 const { handleError } = require("../../../utils/error_handle");
+const { ID_CHAT_ALEX } = require("../../../config/config");
 
 const questionMessage = new Scenes.WizardScene(
   "send_question_message",
@@ -57,7 +58,7 @@ const getReceipt = new Scenes.WizardScene(
       clearTimeout(ctx.wizard.state.timeout);
       const fileId = ctx.update.message.document.file_id;
 
-      await ctx.sendDocument(process.env.ID_CHAT_ALEX, {
+      await ctx.sendDocument(ID_CHAT_ALEX, {
         document: fileId,
       });
 

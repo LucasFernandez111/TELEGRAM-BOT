@@ -6,8 +6,9 @@ const onController = require("./controller/onController");
 const { infoMessage } = require("./utils/responses_es");
 const stage = require("./services/scenes");
 const { checkBlockedUser } = require("./middleware/moderation");
+const { TOKEN_BOT_CLIENT } = require("../../config/config");
 
-const botClient = new Telegraf(process.env.TOKEN_BOT_CLIENT);
+const botClient = new Telegraf(TOKEN_BOT_CLIENT);
 
 botClient.use(checkBlockedUser);
 botClient.use(session());

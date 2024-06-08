@@ -1,7 +1,8 @@
+const { ID_GROUP } = require("../../../config/config");
 const botGroup = require("../../bot-group/botGroup");
 const sendPost = async ({ urlAli, urlYupoo, price, pathImage }) => {
   await botGroup.telegram.sendPhoto(
-    process.env.ID_GROUP,
+    ID_GROUP,
     {
       source: pathImage,
     },

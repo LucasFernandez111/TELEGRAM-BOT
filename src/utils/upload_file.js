@@ -1,22 +1,20 @@
 const path = require("path");
 const axios = require("axios");
 const fs = require("fs");
+const { uploadsBasePath, TOKEN_BOT_ADMIN } = require("../config/config");
 
 const getFileLink = async (ctx) => {
-  const document = ctx.update.message.document;
-  const tokenBot = process.env.TOKEN_BOT_ADMIN;
-
-  const { file_id } = document;
+  const { file_id } = ctx.update.message.document;
 
   const fileInfo = await ctx.telegram.getFile(file_id);
   const filePath = fileInfo.file_path;
-  const fileUrl = `https://api.telegram.org/file/bot${tokenBot}/${filePath}`;
+  const fileUrl = `https://api.telegram.org/file/bot${TOKEN_BOT_ADMIN}/${filePath}`;
 
   return fileUrl;
 };
 
 const uploadFile = async ({ pathUpload, URL, name }) => {
-  const relativePath = path.join(__dirname, "../uploads", pathUpload);
+  const relativePath = path.join(uploadsBasePath, pathUpload);
 
   const writer = fs.createWriteStream(`${relativePath}/${name}`); //Crea flujo de escritura en relativePath
 

@@ -3,14 +3,14 @@ const { startHandler } = require("./services/botAdmin_services");
 const actionController = require("./controller/action");
 const stage = require("./services/scenes");
 const { isAdmin } = require("./middleware/authMiddleware");
+const { TOKEN_BOT_ADMIN } = require("../../config/config");
 
-const botAdmin = new Telegraf(process.env.TOKEN_BOT_ADMIN);
+const botAdmin = new Telegraf(TOKEN_BOT_ADMIN);
 
 botAdmin.use(session());
-
 botAdmin.use(stage.middleware());
-
 botAdmin.use(isAdmin);
+
 botAdmin.start(startHandler);
 
 // ACTIONS

@@ -1,5 +1,5 @@
-const { dateMadrid } = require("../../../utils/config");
-const ID_CHAT_ALEX = process.env.ID_CHAT_ALEX;
+const { dateMadrid, ID_CHAT_ALEX } = require("../../../config/config");
+
 const messageMap = new Map();
 
 const senderMessage = async ({ chatId, message, telegram }) => {
