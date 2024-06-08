@@ -9,7 +9,7 @@ const deleteAllFile = ({ relativePath }) => {
       return;
     }
 
-    if (files.length <= 0) throw Error("No hay archivos guardados");
+    if (files.length === 0) throw Error("No hay archivos guardados");
     files.forEach((file) => {
       fs.unlink(`${relativePath}/${file}`, (err) => {
         if (err) throw Error(`Error al eliminar el archivo ${file}:`, err);

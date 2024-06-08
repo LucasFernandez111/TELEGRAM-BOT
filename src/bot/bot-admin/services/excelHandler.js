@@ -1,6 +1,4 @@
 const XlsxPopulate = require("xlsx-populate");
-const path = require("path");
-const { dateMadrid } = require("../../../utils/config");
 
 const readExcelFile = async (filePath) => {
   const workBook = await XlsxPopulate.fromFileAsync(filePath);
@@ -54,9 +52,17 @@ const getSheetData = (workBook) => {
 
 const getElementsExcel = ({ workBook }) => {
   const sheet = workBook.sheet(0);
-  const codes = sheet.range("A1:A5").value().flat();
+  const codes = sheet
+    .range("A1:A5")
+    .value()
+    .flat()
+    .filter((code) => code != undefined);
 
-  const urls = sheet.range("B1:B5").value().flat();
+  const urls = sheet
+    .range("B1:B5")
+    .value()
+    .flat()
+    .filter((url) => url != undefined);
 
   const yupoo = [sheet.cell("C1").value()];
 
@@ -73,8 +79,16 @@ const getOtherElementsExcel = ({ workBook }) => {
 
   const lastRow = lastCell.rowNumber();
 
-  const codes = sheet.range(`A6:A${lastRow}`).value().flat();
-  const urls = sheet.range(`B6:B${lastRow}`).value().flat();
+  const codes = sheet
+    .range(`A6:A${lastRow}`)
+    .value()
+    .flat()
+    .filter((code) => code != undefined);
+  const urls = sheet
+    .range(`B6:B${lastRow}`)
+    .value()
+    .flat()
+    .filter((url) => url != undefined);
   const yupoo = [sheet.cell("C1").value()];
 
   return {

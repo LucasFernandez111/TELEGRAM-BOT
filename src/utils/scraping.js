@@ -23,7 +23,7 @@ const taskYupoo = async (page, url, codes) => {
 
         return { titleCode, href };
       } else {
-        return null;
+        throw Error(`No se encontro el elemento ${code}`);
       }
     })
   );

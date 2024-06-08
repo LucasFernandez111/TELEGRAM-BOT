@@ -8,7 +8,7 @@ const handleStart = (ctx) => {
   /**  /start */
 
   try {
-    const username = ctx.from.username | "Amig@";
+    const username = ctx.from.username || "Amig@";
 
     ctx.replyWithMarkdown(welcomeMessage.startMessage(username));
   } catch (error) {

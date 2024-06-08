@@ -15,8 +15,8 @@ const path = require("path");
 const { handleError } = require("../../../utils/error_handle");
 const { getPageData, getImagePage } = require("../../../utils/scraping");
 const { formatToSend } = require("./botAdmin_services");
-const { uploadsBasePath, dateMadrid } = require("../../../utils/config");
 const { sendPost } = require("./publishPost");
+const { uploadsBasePath, dateMadrid } = require("../../../config/config");
 
 const getDocument = new Scenes.WizardScene(
   "get_document_scene",
@@ -117,20 +117,15 @@ const publishElements = new Scenes.WizardScene(
 
       const messageProgress = await ctx.reply("🔄 Obteniendo productos...");
 
-      await updateExcel({
-        workBook,
-        codes,
-        urls,
-        lastRow,
-        path: `${pathDirExcel}/${file_id}.xlsx`,
-      });
-
       const productsAli = await getPageData(products.urls, products.codes, ctx);
 
       if (productsAli.length == 0)
         throw Error("No se pudo completar la publicaciones...");
 
       const productsYupoo = await getPageData(products.yupoo, products.codes);
+
+      if (productsYupoo.length == 0)
+        throw Error("Hubo un error con los enlaces de Yupoo...");
 
       const listpath = await getImagePage({
         urls: productsYupoo,
@@ -152,11 +147,21 @@ const publishElements = new Scenes.WizardScene(
         productsFormated.map(async (product) => await sendPost(product))
       );
 
-      await ctx.replyWithDocument({
-        source: `${pathDirExcel}/${file_id}.xlsx`,
-      });
-
-      await deleteAllFile({ relativePath: pathDirExcel });
+      if (codes.length == 0 || urls.length == 0) {
+        ctx.reply("✅📦 ¡Todos los productos de la tabla han sido publicados!");
+      } else {
+        await updateExcel({
+          workBook,
+          codes,
+          urls,
+          lastRow,
+          path: `${pathDirExcel}/${file_id}.xlsx`,
+        });
+        await ctx.replyWithDocument({
+          source: `${pathDirExcel}/${file_id}.xlsx`,
+        });
+        await deleteAllFile({ relativePath: pathDirExcel });
+      }
 
       await deleteAllFile({
         relativePath: path.resolve(__dirname, "../../../uploads", "images"),
