@@ -3,6 +3,9 @@ const { Scenes } = require("telegraf");
 const { senderMessage } = require("./messageSender");
 const { handleError } = require("../../../utils/error_handle");
 const { ID_CHAT_ALEX } = require("../../../config/config");
+const {
+  receiptMiddleware,
+} = require("../../bot-admin/middleware/receiptMiddleware");
 
 const questionMessage = new Scenes.WizardScene(
   "send_question_message",
@@ -29,6 +32,7 @@ const questionMessage = new Scenes.WizardScene(
         message: ctx.message,
         telegram: ctx.telegram,
       });
+
       ctx.reply(
         "¡Gracias! 😊 Tu pregunta ha sido recibida. El asistente responderá pronto."
       );
@@ -56,11 +60,11 @@ const getReceipt = new Scenes.WizardScene(
   async (ctx) => {
     try {
       clearTimeout(ctx.wizard.state.timeout);
-      const fileId = ctx.update.message.document.file_id;
+      await receiptMiddleware(ctx);
 
-      await ctx.sendDocument(ID_CHAT_ALEX, {
-        document: fileId,
-      });
+      const file_id = ctx.update.message.document.file_id;
+
+      ctx.telegram.sendDocument(ID_CHAT_ALEX, file_id);
 
       const confirmMessage = await ctx.reply(
         "✅Comprobante enviado correctamente!"

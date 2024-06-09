@@ -1,3 +1,4 @@
+const { message } = require("telegraf/filters");
 const { handleError } = require("../../../utils/error_handle");
 const {
   unlockUser,
@@ -5,6 +6,7 @@ const {
 } = require("../../bot-admin/services/moderation");
 const { questionsMessage, infoMessage } = require("../utils/responses_es"); // messages
 const { questionsKeyBoard, infoKeyBoard } = require("../Views/keyboard"); //KeysBoard
+const { messageMap } = require("../services/messageSender");
 
 const handleButtonQuestions = (ctx) => {
   /** Button Preguntas Frecuentes */
@@ -46,9 +48,13 @@ const handleButtonReceipt = async (ctx) => {
 const handleBlockUser = async (ctx) => {
   try {
     await ctx.answerCbQuery();
-    await blockUser({ userId: ctx.from.id });
+    const messageId = ctx.callbackQuery.message.message_id;
+    const messageSenderInfo = messageMap.get(messageId);
+    const userId = messageSenderInfo.senderId;
 
-    ctx.reply(`Usuario bloqueado: ${ctx.from.username}\nID:${ctx.from.id}`);
+    await blockUser({ userId });
+
+    ctx.reply(`Usuario bloqueado: ${messageSenderInfo.sender}\nID:${userId}`);
   } catch (err) {
     handleError(ctx, err);
   }
@@ -57,9 +63,14 @@ const handleBlockUser = async (ctx) => {
 const handleUnlockUser = async (ctx) => {
   await ctx.answerCbQuery();
   try {
-    await unlockUser({ userId: ctx.from.id });
+    const messageId = ctx.callbackQuery.message.message_id;
+    const messageSenderInfo = messageMap.get(messageId);
+    const userId = messageSenderInfo.senderId;
+    await unlockUser({ userId });
 
-    ctx.reply(`Usuario desbloqueado: ${ctx.from.username}\nID:${ctx.from.id}`);
+    ctx.reply(
+      `Usuario desbloqueado: ${messageSenderInfo.sender}\nID:${userId}`
+    );
   } catch (err) {
     handleError(ctx, err);
   }
