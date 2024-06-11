@@ -1,5 +1,8 @@
 {
     "conventionalCommits.scopes": [
-        "docker"
+        "docker",
+        "bot-admin",
+        "text",
+        "scenes"
     ]
 }
