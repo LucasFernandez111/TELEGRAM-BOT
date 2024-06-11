@@ -52,6 +52,7 @@ const taskAliexpress = async (page, url, cookies) => {
     (element) => element.textContent,
     divElement
   );
+  if (!price) throw Error(`${url}: Precio no encontrado!`);
 
   page.removeAllListeners("request");
   return { title, price, urlAli: url };

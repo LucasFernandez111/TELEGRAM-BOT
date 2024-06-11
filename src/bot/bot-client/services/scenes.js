@@ -77,7 +77,7 @@ const getReceipt = new Scenes.WizardScene(
         );
       }, 4500);
     } catch (err) {
-      handleError(ctx, err);
+      await handleError(ctx, err);
       ctx.scene.reenter();
     } finally {
       ctx.scene.leave();
