@@ -1,6 +1,6 @@
 const uploadMiddleware = (ctx) => {
   if (!ctx.update.message || !ctx.update.message.document)
-    throw Error("No se ha recibido ningun mensaje. Vuelve a intentarlo...");
+    throw Error("No se ha recibido ningun documento. Vuelve a intentarlo...");
   const { mime_type } = ctx.update.message.document;
 
   const typeXlsx =

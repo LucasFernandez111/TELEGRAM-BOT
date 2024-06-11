@@ -15,7 +15,7 @@ const sendPost = async ({ urlAli, urlYupoo, price, pathImage }) => {
             \nEn tan solo unos días, dependiendo del lugar, te llegará en las mejores condiciones y ahorrando un dineral!
             \n✅${price}✅
             \n<b>🔥Acuérdate de enviarnos el comprobante🔥</b>
-            \n🚫OFERTA LIMITADA DE ESTE CANAL DE VENTAS🚫\n\nPara continuar, puedes dirigirte al bot @Joselu_asistente_bot 🤖`,
+            \n🚫OFERTA LIMITADA DE ESTE CANAL DE VENTAS🚫\n\nPara <b>COMPRAR</b>, puedes dirigirte al bot @Joselu_asistente_bot 🤖`,
       parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
