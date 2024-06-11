@@ -82,7 +82,6 @@ const getPageData = async (URL_LIST, CODE_LIST, ctx = null) => {
     },
     concurrency: Cluster.CONCURRENCY_BROWSER,
     maxConcurrency: URL_LIST.length > 1 ? 2 : 1, //Si es 1 url (1 cluster)
-    monitor: true,
   });
 
   await cluster.task(async ({ page, data: { url, code } }) => {

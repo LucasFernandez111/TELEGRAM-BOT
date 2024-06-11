@@ -1,6 +1,7 @@
 const path = require("path");
 
 const date = new Date();
+
 module.exports = {
   dateMadrid: date
     .toLocaleDateString("es-ES", { timeZone: "Europe/Madrid", hour12: false })
@@ -11,6 +12,6 @@ module.exports = {
   ID_GROUP: process.env.ID_GROUP,
   ID_CHAT_ALEX: process.env.ID_CHAT_ALEX,
   PORT: process.env.PORT,
-  srcBasePath: path.resolve(__dirname, "../../src"),
+  srcBasePath: path.resolve(__dirname, "../"),
   uploadsBasePath: path.resolve(__dirname, "../uploads"),
 };
