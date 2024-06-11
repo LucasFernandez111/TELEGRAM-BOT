@@ -4,6 +4,7 @@
         "bot-admin",
         "text",
         "scenes",
-        "server"
+        "server",
+        "config"
     ]
 }

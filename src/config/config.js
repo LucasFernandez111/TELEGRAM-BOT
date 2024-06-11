@@ -10,6 +10,7 @@ module.exports = {
   TOKEN_BOT_GROUP: process.env.TOKEN_BOT_GROUP,
   ID_GROUP: process.env.ID_GROUP,
   ID_CHAT_ALEX: process.env.ID_CHAT_ALEX,
+  PORT: process.env.PORT,
   srcBasePath: path.resolve(__dirname, "../../src"),
   uploadsBasePath: path.resolve(__dirname, "../uploads"),
 };
