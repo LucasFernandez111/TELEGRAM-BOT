@@ -1,16 +1,13 @@
-const botGroup = require("./bot/bot-group/botGroup");
-const botClient = require("./bot/bot-client/botClient");
+const express = require("express");
 const botAdmin = require("./bot/bot-admin/botAdmin");
+const botClient = require("./bot/bot-client/botClient");
+const botGroup = require("./bot/bot-group/botGroup");
+const { PORT } = require("./config/config");
 
-botAdmin
-  .launch()
-  .then(() => console.log("Admin Bot Conectado"))
-  .catch((error) => console.log(error));
-botGroup
-  .launch()
-  .then(() => console.log("Group Bot Conectado"))
-  .catch((error) => console.log(error));
-botClient
-  .launch()
-  .then(() => console.log("Client Bot Conectado"))
-  .catch((error) => console.log(error));
+const app = express();
+
+app.listen(PORT, () => {
+  botAdmin.launch();
+  botGroup.launch();
+  botClient.launch();
+});
