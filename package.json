@@ -4,9 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon  ./src/utils/prueba.js",
-		"dev": "nodemon --env-file=.env ./src/index.js",
-		"test": "nodemon --env-file=.env C:\\Users\\Lucas\\Desktop\\TELEGRAM-BOT\\src\\bot\\bot-admin\\services\\botAdmin_services.js"
+		"start": "node --env-file=.env src/index.js"
 	},
 	"keywords": [],
 	"author": "",
