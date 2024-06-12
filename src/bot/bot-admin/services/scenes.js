@@ -1,6 +1,6 @@
 const { Scenes } = require("telegraf");
 const { uploadMiddleware } = require("../middleware/uploadMiddleware");
-const { getFileLink, uploadFile } = require("../../../utils/upload_file");
+const { getFileLink } = require("../../../utils/upload_file");
 const {
   readExcelFile,
   getSheetData,
@@ -10,13 +10,18 @@ const {
   updateExcel,
   getLinkYupoo,
 } = require("./excelHandler");
-const { deleteAllFile } = require("../../../utils/files");
+const { deleteAllFiles, downloadFile } = require("../../../utils/files");
 const path = require("path");
 const { handleError } = require("../../../utils/error_handle");
 const { getPageData, getImagePage } = require("../../../utils/scraping");
 const { formatToSend } = require("./botAdmin_services");
 const { sendPost } = require("./publishPost");
-const { uploadsBasePath, dateMadrid } = require("../../../config/config");
+const {
+  dateMadrid,
+  publishBasePath,
+  loadBasePath,
+  imagesBasePath,
+} = require("../../../config/config");
 
 const getDocument = new Scenes.WizardScene(
   "get_document_scene",
@@ -38,15 +43,15 @@ const getDocument = new Scenes.WizardScene(
       uploadMiddleware(ctx);
       const fileLink = await getFileLink(ctx); // Link Telegram file
 
-      const pathExcel = await uploadFile({
-        pathUpload: "/document/load",
-        URL: fileLink,
-        name: "document.xlsx",
-      }); //upload File
+      const pathExcel = await downloadFile({
+        destinationPath: loadBasePath,
+        fileUrl: fileLink,
+      });
 
       const workBook = await readExcelFile(pathExcel);
-      deleteAllFile({
-        relativePath: path.dirname(pathExcel),
+
+      await deleteAllFiles({
+        directoryPath: loadBasePath,
       });
 
       const linkYupoo = getLinkYupoo(workBook);
@@ -55,23 +60,20 @@ const getDocument = new Scenes.WizardScene(
 
       ctx.reply("¡Excel cargado con éxito! ✅📊!");
 
-      const pathFile = path.resolve(
-        uploadsBasePath,
-        "document",
-        "new",
-        `new-document-${dateMadrid}.xlsx`
-      );
-
       ctx.reply("Creando un nuevo archivo Excel... 📊✨");
 
       const pathNewExcel = await createNewExcel({
         products: sheetData,
         linkYupoo,
-        pathFile,
+        pathFile: path.join(loadBasePath, `${dateMadrid}.xlsx`),
       });
 
       await ctx.replyWithDocument({
         source: pathNewExcel,
+      });
+
+      await deleteAllFiles({
+        directoryPath: loadBasePath,
       });
 
       ctx.scene.leave();
@@ -101,11 +103,11 @@ const publishElements = new Scenes.WizardScene(
       await uploadMiddleware(ctx);
       const { file_id } = ctx.update.message.document;
       const fileLink = await getFileLink(ctx); // Link Telegram file
-      const excelPath = await uploadFile({
-        pathUpload: "/document/publish",
-        URL: fileLink,
-        name: `update-${file_id}-${dateMadrid}.xlsx`,
-      }); //upload File
+
+      const excelPath = await downloadFile({
+        destinationPath: publishBasePath,
+        fileUrl: fileLink,
+      });
 
       const workBook = await readExcelFile(excelPath);
 
@@ -160,11 +162,11 @@ const publishElements = new Scenes.WizardScene(
         await ctx.replyWithDocument({
           source: `${pathDirExcel}/${file_id}.xlsx`,
         });
-        await deleteAllFile({ relativePath: pathDirExcel });
+        await deleteAllFiles({ directoryPath: pathDirExcel });
       }
 
-      await deleteAllFile({
-        relativePath: path.resolve(__dirname, "../../../uploads", "images"),
+      await deleteAllFiles({
+        directoryPath: imagesBasePath,
       });
 
       await ctx.telegram.editMessageText(
@@ -176,9 +178,9 @@ const publishElements = new Scenes.WizardScene(
 
       ctx.scene.leave();
     } catch (error) {
+      handleError(ctx, error);
       ctx.reply("Vuelve a intentarlo..");
       ctx.scene.leave();
-      handleError(ctx, error);
     }
   }
 );

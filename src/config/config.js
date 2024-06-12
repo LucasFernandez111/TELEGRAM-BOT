@@ -12,6 +12,14 @@ module.exports = {
   ID_GROUP: process.env.ID_GROUP,
   ID_CHAT_ALEX: process.env.ID_CHAT_ALEX,
   PORT: process.env.PORT,
-  srcBasePath: path.resolve(__dirname, "../"),
-  uploadsBasePath: path.resolve(__dirname, "../uploads"),
+  srcBasePath: process.env.BASE_PATH,
+  uploadsBasePath: path.join(process.env.BASE_PATH, "uploads"),
+  publishBasePath: path.join(
+    process.env.BASE_PATH,
+    "uploads",
+    "document",
+    "publish"
+  ),
+  imagesBasePath: path.join(process.env.BASE_PATH, "uploads", "images"),
+  loadBasePath: path.join(process.env.BASE_PATH, "uploads", "document", "load"),
 };
