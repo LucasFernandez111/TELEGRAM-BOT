@@ -6,4 +6,3 @@ services:
       - .env
     ports:
       - "3000:3000"
-    
