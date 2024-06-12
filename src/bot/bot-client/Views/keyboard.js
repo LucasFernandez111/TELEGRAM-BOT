@@ -4,7 +4,6 @@ const { menuMessage, questionsMessage, infoMessage } = messageEs;
 
 exports.menuKeyBoard = Markup.inlineKeyboard([
   [Markup.button.callback(menuMessage.keyBoard.text_tutorial, "tutorial")],
-  [Markup.button.callback(menuMessage.keyBoard.text_voucher, "receipt")],
   [Markup.button.callback(menuMessage.keyBoard.text_questions, "questions")],
   [Markup.button.callback(menuMessage.keyBoard.text_info, "information")],
   [Markup.button.callback(menuMessage.keyBoard.text_custom, "custom_question")],

@@ -17,7 +17,6 @@ botClient.use(stage.middleware());
 botClient.start(commandController.handleStart);
 botClient.command("menu", commandController.handleMenu);
 
-botClient.action("receipt", actionController.handleButtonReceipt);
 botClient.action("questions", actionController.handleButtonQuestions);
 botClient.action("information", actionController.handleButtonInfo);
 botClient.action("custom_question", actionController.handleCustomQuestion);

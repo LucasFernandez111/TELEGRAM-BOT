@@ -34,7 +34,7 @@ const handleButtonOptions = async (ctx) => {
 
     case "option3":
       ctx.replyWithMarkdown(
-        `1⃣ Pincha en el enlace. Es un enlace OCULTO, te llevará a otro producto diferente, no te preocupes, sigue las instrucciones.\n\n2⃣ Selecciona el modelo según el CÓDIGO DE LAS IMÁGENES (presta atención a las miniaturas o códigos de las fotos de Telegram para saber qué hay que seleccionar en el enlace de compra).\n\n3⃣ Elige el modelo y talla en las descripciones.\n\n4⃣ En notas del artículo, deja el código (Código) y las especificaciones de color o talla.\n\n5⃣ Por último, completa todos los datos y paga ahora. Tu pedido llegará tal cual lo pediste y a la dirección seleccionada.`
+        `1⃣ Pincha en el enlace. Es un enlace OCULTO, te llevará a otro producto diferente, no te preocupes, sigue las instrucciones.\n\n2⃣ Selecciona el modelo según el CÓDIGO DE LAS IMÁGENES (presta atención a las miniaturas o códigos de las fotos de Telegram para saber qué hay que seleccionar en el enlace de compra).\n\n3⃣ Elige el modelo y talla en las descripciones.\n\n4⃣ En notas del artículo, deja *LA PALABRA CLAVE Chollazo2.0* y las especificaciones de color o talla.\n\n5⃣ Por último, completa todos los datos y paga ahora. Tu pedido llegará tal cual lo pediste y a la dirección seleccionada.`
       );
 
       break;
@@ -70,7 +70,9 @@ const handleButtonOptions = async (ctx) => {
       break;
 
     case "other3":
-      ctx.replyWithMarkdown(`Estamos chequeando esa opción... 🕵️‍♂️`);
+      ctx.replyWithMarkdown(
+        `Las políticas de devolución son las que presenta Aliexpress.`
+      );
       break;
 
     case "other4":

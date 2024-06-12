@@ -7,21 +7,20 @@ const messageEs = {
   },
 
   menuMessage: {
-    messageDos: `\n📘 Para obtener un tutorial detallado sobre cómo comprar, selecciona el BOTÓN "TUTORIAL DE COMPRA".\n\n📄 Para enviar el comprobante de compra, usa el BOTÓN "COMPROBANTE".\n\nℹ️ Antes de realizar tu compra, asegúrate de revisar la información importante con el BOTÓN\n"INFORMACIÓN VALIOSA".\n\n❓🤔 Si tienes alguna pregunta o necesitas ayuda, no dudes en usar el BOTÓN "PREGUNTAS FRECUENTES Y AYUDA".\n\n📸 *Recuerda enviarme una captura o un comprobante de compra junto con el código (CÓDIGO ALEX) para asegurarnos de que el pedido se realice correctamente y tengamos un seguimiento adecuado del mismo* 📦✅.\n\n¡Estoy aquí para ayudarte en cada paso del proceso de compra! 💪😃🛒`,
-    message: `Para obtener un tutorial detallado sobre cómo comprar, selecciona el BOTÓN\n"TUTORIAL DE COMPRA" 📘\n\nPara enviar el comprobante de compra, utiliza el BOTÓN "COMPROBANTE" 📄.\n\nAntes de realizar tu compra, te recomiendo revisar la información importante\nseleccionando el BOTÓN "INFORMACIÓN VALIOSA" ℹ️.\n\nSi tienes alguna pregunta o necesitas ayuda, no dudes en utilizar el BOTÓN\n"PREGUNTAS FRECUENTES Y AYUDA" ❓🤔.\n\n*Recuerda enviarme una captura o un comprobante de compra 📸 junto con el\ncódigo (CÓDIGO ALEX) para asegurarnos de que el pedido se realice\ncorrectamente y tengamos un seguimiento adecuado del mismo 📦✅.*\n\nEstoy aquí para ayudarte en cada paso del proceso de compra! 😊🛒`,
+    messageDos: `\n📘 Para obtener un tutorial detallado sobre cómo comprar, selecciona el BOTÓN "TUTORIAL DE COMPRA".\n\n📄 Para enviar el NÚMERO DE PEDIDO de compra (OBLIGATORIO), utiliza el BOTÓN "ASISTENTE Y NÚMERO DE COMPRA".\n\nℹ️ Antes de realizar tu compra, asegúrate de revisar la información importante con el BOTÓN\n"INFORMACIÓN VALIOSA".\n\n❓🤔 Si tienes alguna pregunta o necesitas ayuda ESPECÍFICA PARA QUE EL EQUIPO te responda, no dudes en utilizar el BOTÓN "ASISTENTE Y NÚMERO DE COMPRA".\n\n*Recuerda enviarme el NÚMERO DE PEDIDO DE COMPRA 📸 junto con el código Chollazo2.0 para asegurarnos de que el pedido se realice correctameante y tengamos un seguimiento adecuado del mismo* 📦✅.\n\n¡Estoy aquí para ayudarte en cada paso del proceso de compra! 💪😃🛒`,
     keyBoard: {
       text_tutorial: "📘 TUTORIAL DE COMPRA  ",
-      text_voucher: " 🧾 COMPROBANTE ",
+
       text_questions: "❓🤔PREGUNTAS FRECUENTES ",
       text_info: "ℹ️ INFORMACIÓN VALIOSA ",
-      text_custom: " 💬PREGUNTA PERSONALIZADA",
+      text_custom: " 💬ASISTENTE Y NÚMERO DE COMPRA",
     },
   },
   questionsMessage: {
     message: "ㅤㅤ*PREGUNTAS FRECUENTES*ㅤㅤ",
     keyBoard: {
       text_options: [
-        "¿Qué es [Nombre de la tienda]? 🤔",
+        "¿Qué es Chollazo2.0? 🤔",
         "¿Quiénes pueden comprar aquí? 🛍️",
         "¿Cuándo recibiré mi pedido? ⏰📦",
         "¿Cómo comienzo a comprar? 🛒",
@@ -55,7 +54,7 @@ const messageEs = {
 
         `Para los que tienen Android, entra en la app de Telegram, pulsa arriba en los 3 puntitos y ve a ajustes, baja abajo y DESACTIVA el navegador interno.`,
 
-        `Hay compradores que al recibir sus pedidos reciben algo de distinta talla o modelo y al comprobarlo la sorpresa es que tu pedido ha cambiado!!!\n\nPERO NO, se trata de un bug/error de la app de AliExpress, por ello RECOMENDAMOS que justo antes de pagar, puedes ver el resumen del pedido y comprobarlo.\n\nSi cambia, la solución temporal es realizar el pedido desde un PC.`,
+        `Hay compradores que al recibir sus pedidos reciben algo de distinta talla o modelo y al comprobarlo la sorpresa es que tu pedido ha cambiado!!!\n\nPERO NO, se trata de un bug/error de la app de AliExpress, por ello RECOMENDAMOS que justo antes de pagar, puedes ver el resumen del pedido y comprobarlo.\n\nSi cambia, la solución temporal es realizar el pedido desde un PC y SIEMPRE UTILIZA LA PALABRA CLAVE *“Chollazo2.0”*.`,
 
         `Si el vendedor sospecha que no eres un buen comprador, es posible que no te envíen pedidos.\n\nDisponen de una lista negra en la que los vendedores incluyen a los malos compradores.\n\nNo siempre es justo, pero es una forma de ahorrarse problemas.`,
 

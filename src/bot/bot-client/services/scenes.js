@@ -2,10 +2,6 @@ const { Scenes } = require("telegraf");
 
 const { senderMessage } = require("./messageSender");
 const { handleError } = require("../../../utils/error_handle");
-const { ID_CHAT_ALEX } = require("../../../config/config");
-const {
-  receiptMiddleware,
-} = require("../../bot-admin/middleware/receiptMiddleware");
 
 const questionMessage = new Scenes.WizardScene(
   "send_question_message",
@@ -44,45 +40,4 @@ const questionMessage = new Scenes.WizardScene(
   }
 );
 
-const getReceipt = new Scenes.WizardScene(
-  "scene_get_receipt",
-  (ctx) => {
-    ctx.reply(`🧾Por favor envia el comprobante a continuacion`);
-    ctx.wizard.state.timeout = setTimeout(() => {
-      ctx.reply(
-        "Tiempo de espera para comprobante agotado. Por favor, intenta nuevamente."
-      );
-      ctx.scene.leave();
-    }, 30000);
-    ctx.wizard.next();
-  },
-
-  async (ctx) => {
-    try {
-      clearTimeout(ctx.wizard.state.timeout);
-      await receiptMiddleware(ctx);
-
-      const file_id = ctx.update.message.document.file_id;
-
-      ctx.telegram.sendDocument(ID_CHAT_ALEX, file_id);
-
-      const confirmMessage = await ctx.reply(
-        "✅Comprobante enviado correctamente!"
-      );
-
-      setTimeout(() => {
-        ctx.telegram.deleteMessage(
-          confirmMessage.chat.id,
-          confirmMessage.message_id
-        );
-      }, 4500);
-    } catch (err) {
-      await handleError(ctx, err);
-      ctx.scene.reenter();
-    } finally {
-      ctx.scene.leave();
-    }
-  }
-);
-
-module.exports = new Scenes.Stage([questionMessage, getReceipt]);
+module.exports = new Scenes.Stage([questionMessage]);

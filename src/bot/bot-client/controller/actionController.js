@@ -36,15 +36,6 @@ const handleCustomQuestion = async (ctx) => {
   await ctx.answerCbQuery();
 };
 
-const handleButtonReceipt = async (ctx) => {
-  try {
-    await ctx.scene.enter("scene_get_receipt");
-    await ctx.answerCbQuery();
-  } catch (error) {
-    handleError(ctx, error);
-  }
-};
-
 const handleBlockUser = async (ctx) => {
   try {
     await ctx.answerCbQuery();
@@ -79,7 +70,6 @@ module.exports = {
   handleButtonQuestions,
   handleButtonInfo,
   handleCustomQuestion,
-  handleButtonReceipt,
   handleBlockUser,
   handleUnlockUser,
 };
