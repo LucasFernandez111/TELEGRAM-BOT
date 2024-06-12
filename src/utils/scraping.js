@@ -1,6 +1,7 @@
 const { Cluster } = require("puppeteer-cluster");
 
 const path = require("path");
+const { imagesBasePath } = require("../config/config");
 
 const requestInterception = (request) => {
   if (["image", "stylesheet", "font"].indexOf(request.resourceType()) !== -1) {
@@ -77,6 +78,7 @@ const getPageData = async (URL_LIST, CODE_LIST, ctx = null) => {
 
   const cluster = await Cluster.launch({
     puppeteerOptions: {
+      executablePath: "/usr/bin/google-chrome",
       args: ["--no-sandbox"],
       headless: true,
     },
@@ -116,6 +118,7 @@ const getImagePage = async ({ urls }) => {
   const listPath = [];
   const cluster = await Cluster.launch({
     puppeteerOptions: {
+      executablePath: "/usr/bin/google-chrome",
       args: ["--no-sandbox"],
       headless: true,
     },
@@ -138,7 +141,7 @@ const getImagePage = async ({ urls }) => {
 
     const name = url.split("/").pop().split("?")[0] + ".png";
 
-    const pathRelative = path.resolve(__dirname, "../uploads", "images", name);
+    const pathRelative = path.resolve(imagesBasePath, name);
 
     const boundingBox = await elementImage.boundingBox();
     await page.screenshot({
