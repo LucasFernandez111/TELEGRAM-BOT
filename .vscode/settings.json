@@ -5,6 +5,7 @@
         "text",
         "scenes",
         "server",
-        "config"
+        "config",
+        "bot"
     ]
 }
