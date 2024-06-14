@@ -18,14 +18,12 @@ const taskYupoo = async (page, url, codes) => {
   return await Promise.all(
     codes.map(async (code) => {
       const element = await page.$(`a[title="${code}"]`);
-      if (element) {
-        const href = await page.evaluate((el) => el.href, element);
-        const titleCode = await page.evaluate((el) => el.title, element);
+      if (!element) throw Error(`No se encontro el elemento ${code}`);
 
-        return { titleCode, href };
-      } else {
-        throw Error(`No se encontro el elemento ${code}`);
-      }
+      const href = await page.evaluate((el) => el.href, element);
+      const titleCode = await page.evaluate((el) => el.title, element);
+
+      return { titleCode, href };
     })
   );
 };
@@ -78,7 +76,7 @@ const getPageData = async (URL_LIST, CODE_LIST, ctx = null) => {
 
   const cluster = await Cluster.launch({
     puppeteerOptions: {
-      executablePath: "/usr/bin/google-chrome",
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       args: ["--no-sandbox"],
       headless: true,
     },
@@ -118,13 +116,12 @@ const getImagePage = async ({ urls }) => {
   const listPath = [];
   const cluster = await Cluster.launch({
     puppeteerOptions: {
-      executablePath: "/usr/bin/google-chrome",
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       args: ["--no-sandbox"],
       headless: true,
     },
     concurrency: Cluster.CONCURRENCY_BROWSER,
     maxConcurrency: urls.length > 1 ? 2 : 1, //Si es 1 url (1 cluster)
-    monitor: true,
   });
 
   await cluster.task(async ({ page, data: url }) => {
@@ -138,6 +135,8 @@ const getImagePage = async ({ urls }) => {
     await page.waitForSelector("img.autocover");
 
     const elementImage = await page.$("img.autocover");
+
+    if (!elementImage) throw Error(`No se encontro el elemento ${url}`);
 
     const name = url.split("/").pop().split("?")[0] + ".png";
 

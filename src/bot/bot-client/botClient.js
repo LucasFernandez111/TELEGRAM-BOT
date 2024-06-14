@@ -7,13 +7,11 @@ const { infoMessage } = require("./utils/responses_es");
 const stage = require("./services/scenes");
 const { checkBlockedUser } = require("./middleware/moderation");
 const { TOKEN_BOT_CLIENT } = require("../../config/config");
-
 const botClient = new Telegraf(TOKEN_BOT_CLIENT);
 
 botClient.use(checkBlockedUser);
 botClient.use(session());
 botClient.use(stage.middleware());
-
 botClient.start(commandController.handleStart);
 botClient.command("menu", commandController.handleMenu);
 
