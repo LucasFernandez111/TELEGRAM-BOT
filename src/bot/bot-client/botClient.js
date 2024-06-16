@@ -7,6 +7,7 @@ const { infoMessage } = require("./utils/responses_es");
 const stage = require("./services/scenes");
 const { checkBlockedUser } = require("./middleware/moderation");
 const { TOKEN_BOT_CLIENT } = require("../../config/config");
+const { message } = require("telegraf/filters");
 const botClient = new Telegraf(TOKEN_BOT_CLIENT);
 
 botClient.use(checkBlockedUser);
@@ -26,7 +27,7 @@ infoMessage.keyboard.text_options.forEach((option, index) => {
   });
 });
 
-botClient.on("reply_to_message", onController.handleResponseMessage);
+botClient.on(message("reply_to_message"), onController.handleResponseMessage);
 botClient.on("callback_query", onController.handleButtonOptions);
 
 module.exports = botClient;

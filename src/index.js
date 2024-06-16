@@ -7,7 +7,19 @@ const { PORT } = require("./config/config");
 const app = express();
 
 app.listen(PORT, () => {
-  botAdmin.launch();
-  botGroup.launch();
-  botClient.launch();
+  botAdmin
+    .launch(() => console.log("Bot Admin activado"))
+    .catch((error) => {
+      console.log("El bot admin fallo: ", error);
+    });
+  botClient
+    .launch(() => console.log("Bot Client activado"))
+    .catch((error) => {
+      console.log("El bot cliente fallo: ", error);
+    });
+  botGroup
+    .launch(() => console.log("Bot Group activado"))
+    .catch((error) => {
+      console.log("El bot grupo fallo: ", error);
+    });
 });
