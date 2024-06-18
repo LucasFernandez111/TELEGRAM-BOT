@@ -178,9 +178,10 @@ const publishElements = new Scenes.WizardScene(
 
       ctx.scene.leave();
     } catch (error) {
-      handleError(ctx, error);
       ctx.reply("Vuelve a intentarlo..");
       ctx.scene.leave();
+      deleteAllFiles({ directoryPath: publishBasePath });
+      handleError(ctx, error);
     }
   }
 );

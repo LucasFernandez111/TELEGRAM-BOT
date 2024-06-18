@@ -1,4 +1,3 @@
-const { message } = require("telegraf/filters");
 const { handleError } = require("../../../utils/error_handle");
 const {
   unlockUser,
@@ -13,6 +12,22 @@ const handleButtonQuestions = (ctx) => {
   try {
     ctx.answerCbQuery();
     ctx.replyWithMarkdown(questionsMessage.message, questionsKeyBoard);
+  } catch (error) {
+    handleError(ctx, error);
+  }
+};
+
+const handleButtonTutorial = async (ctx) => {
+  await ctx.answerCbQuery();
+  try {
+    const videoId =
+      "BAACAgEAAxkBAAII8mZwyPpYv5KNShcdSeZYj6XjLUXZAAKmAwACQNmIR0T8Eo3Bedm-NQQ";
+    await ctx.replyWithVideo(videoId, {
+      caption:
+        "🎥🛒 ¡Bienvenido al video tutorial de compra! En este video te mostraremos cómo utilizar nuestro bot para realizar compras. ¡Descubre todas las opciones disponibles y cómo sacar el máximo provecho de ellas!",
+      supports_streaming: true,
+      show_caption_above_media: true,
+    });
   } catch (error) {
     handleError(ctx, error);
   }
@@ -71,5 +86,6 @@ module.exports = {
   handleButtonInfo,
   handleCustomQuestion,
   handleBlockUser,
+  handleButtonTutorial,
   handleUnlockUser,
 };
