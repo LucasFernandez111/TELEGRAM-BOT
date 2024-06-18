@@ -1,9 +1,7 @@
-//if si lenguage = es ? MessageEs  : MessageEn
-
 const messageEs = {
   welcomeMessage: {
     startMessage: (username) =>
-      `Hola! *${username}* 😊 Soy Joselu el BOT personal del Grupo (Nombre del grupo de telegram).\nEstoy aquí para ayudarte.\n\nSi necesitas algo, no dudes en preguntarme. 🤖 (/menu)`,
+      `Hola! *${username}* 😊 Soy Joselu el BOT personal del Grupo *CholloPro2.0*.\nEstoy aquí para ayudarte.\n\nSi necesitas algo, no dudes en preguntarme. 🤖 (/menu)`,
   },
 
   menuMessage: {
