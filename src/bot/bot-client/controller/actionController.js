@@ -24,9 +24,9 @@ const handleButtonTutorial = async (ctx) => {
       "BAACAgEAAxkBAAII8mZwyPpYv5KNShcdSeZYj6XjLUXZAAKmAwACQNmIR0T8Eo3Bedm-NQQ";
     await ctx.replyWithVideo(videoId, {
       caption:
-        "🎥🛒 ¡Bienvenido al video tutorial de compra! En este video te mostraremos cómo utilizar nuestro bot para realizar compras. ¡Descubre todas las opciones disponibles y cómo sacar el máximo provecho de ellas!",
+        "📘 *TUTORIAL DE COMPRA*\n\n🎥 En este video te mostraremos cómo utilizar nuestro bot para realizar compras",
+      parse_mode: "MarkdownV2",
       supports_streaming: true,
-      show_caption_above_media: true,
     });
   } catch (error) {
     handleError(ctx, error);
