@@ -1,3 +1,4 @@
+const { timeout } = require("puppeteer");
 const { imagesBasePath } = require("../../config/config");
 const path = require("path");
 
@@ -8,7 +9,7 @@ exports.getImages = async ({ page, url }) => {
     deviceScaleFactor: 2, // Aumenta la densidad de píxeles
   });
 
-  await page.goto(url, { waitUntil: "networkidle2" });
+  await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
 
   await page.waitForSelector("img.autocover", { timeout: 10000 });
 
