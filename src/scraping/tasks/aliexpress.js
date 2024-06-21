@@ -24,7 +24,7 @@ const taskAliexpress = async (page, url, code) => {
 
   const title = titleFull.split(",", 1)[0];
 
-  const divElement = await page.$(".es--wrap--vZDQqfj", { timeout: 10000 });
+  const divElement = await page.$(".es--wrap--vZDQqfj", { timeout: 60000 });
 
   const price = await page.evaluate(
     (element) => element?.textContent,
