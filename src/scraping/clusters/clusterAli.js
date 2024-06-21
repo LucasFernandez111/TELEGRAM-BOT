@@ -11,7 +11,7 @@ const clusterAli = async ({ urls, codes, ctx }) => {
       headless: true,
     },
     concurrency: Cluster.CONCURRENCY_PAGE,
-    maxConcurrency: 3,
+    maxConcurrency: 2,
   });
 
   await cluster.task(async ({ page, data: { url, code } }) => {

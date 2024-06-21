@@ -16,6 +16,7 @@ const taskAliexpress = async (page, url, code) => {
   await page.setCookie(...cookies);
 
   await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+
   const titleFull = await page.title();
 
   if (["Page Not Found - Aliexpress.com", "404 page"].includes(titleFull))

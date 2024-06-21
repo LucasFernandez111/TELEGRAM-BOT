@@ -8,11 +8,11 @@ const clusterYupoo = async ({ urls, codes, ctx }) => {
   const cluster = await Cluster.launch({
     puppeteerOptions: {
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-      args: ["--no-sandbox"],
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
       headless: true,
     },
     concurrency: Cluster.CONCURRENCY_PAGE,
-    maxConcurrency: 3,
+    maxConcurrency: 2,
   });
 
   await cluster.task(async ({ page, data: { url, code } }) => {
