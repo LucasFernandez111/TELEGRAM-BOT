@@ -13,7 +13,7 @@ const {
 const { deleteAllFiles, downloadFile } = require("../../../utils/files");
 const path = require("path");
 const { handleError } = require("../../../utils/error_handle");
-const { getPageData, getImagePage } = require("../../../utils/scraping");
+
 const { formatToSend } = require("./botAdmin_services");
 const { sendPost } = require("./publishPost");
 const {
@@ -22,6 +22,9 @@ const {
   loadBasePath,
   imagesBasePath,
 } = require("../../../config/config");
+const clusterAli = require("../../../scraping/clusters/clusterAli");
+const clusterYupoo = require("../../../scraping/clusters/clusterYup");
+const clusterImages = require("../../../scraping/clusters/clusterImages");
 
 const getDocument = new Scenes.WizardScene(
   "get_document_scene",
@@ -94,14 +97,14 @@ const publishElements = new Scenes.WizardScene(
         "Tiempo de espera para el archivo. Por favor, intenta nuevamente."
       );
       ctx.scene.leave();
-    }, 20000);
+    }, 40000);
     ctx.wizard.next();
   },
   async (ctx) => {
     try {
       clearTimeout(ctx.wizard.state.timeout);
       await uploadMiddleware(ctx);
-      const { file_id } = ctx.update.message.document;
+      const file_id = ctx.update.message.document.file_id;
       const fileLink = await getFileLink(ctx); // Link Telegram file
 
       const excelPath = await downloadFile({
@@ -119,17 +122,27 @@ const publishElements = new Scenes.WizardScene(
 
       const messageProgress = await ctx.reply("🔄 Obteniendo productos...");
 
-      const productsAli = await getPageData(products.urls, products.codes, ctx);
+      const productsAli = await clusterAli({
+        urls: products?.urls,
+        codes: products?.codes,
+        ctx,
+      });
 
       if (productsAli.length == 0)
-        throw Error("No se pudo completar la publicaciones...");
+        throw Error("Todos los enlaces estan caidos 🔙...");
 
-      const productsYupoo = await getPageData(products.yupoo, products.codes);
+      await ctx.reply("Datos recopilados de Aliexpress... ✅🔄 ");
+
+      const productsYupoo = await clusterYupoo({
+        urls: products?.yupoo,
+        codes: products?.codes,
+        ctx,
+      });
 
       if (productsYupoo.length == 0)
         throw Error("Hubo un error con los enlaces de Yupoo...");
-
-      const listpath = await getImagePage({
+      await ctx.reply("Reopilando imagenes de Yupoo 📸...");
+      const listpath = await clusterImages({
         urls: productsYupoo,
       });
 
@@ -157,17 +170,13 @@ const publishElements = new Scenes.WizardScene(
           codes,
           urls,
           lastRow,
-          path: `${pathDirExcel}/${file_id}.xlsx`,
+          path: path.join(pathDirExcel, `${file_id}.xlsx`),
         });
         await ctx.replyWithDocument({
-          source: `${pathDirExcel}/${file_id}.xlsx`,
+          source: path.join(pathDirExcel, `${file_id}.xlsx`),
         });
         await deleteAllFiles({ directoryPath: pathDirExcel });
       }
-
-      await deleteAllFiles({
-        directoryPath: imagesBasePath,
-      });
 
       await ctx.telegram.editMessageText(
         ctx.chat.id,
@@ -179,9 +188,15 @@ const publishElements = new Scenes.WizardScene(
       ctx.scene.leave();
     } catch (error) {
       ctx.reply("Vuelve a intentarlo..");
-      ctx.scene.leave();
-      deleteAllFiles({ directoryPath: publishBasePath });
+
       handleError(ctx, error);
+    } finally {
+      deleteAllFiles({ directoryPath: publishBasePath });
+      deleteAllFiles({
+        directoryPath: imagesBasePath,
+      });
+
+      ctx.scene.leave();
     }
   }
 );
