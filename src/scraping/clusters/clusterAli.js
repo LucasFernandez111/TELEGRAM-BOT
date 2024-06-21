@@ -7,11 +7,20 @@ const clusterAli = async ({ urls, codes, ctx }) => {
   const cluster = await Cluster.launch({
     puppeteerOptions: {
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-      args: ["--no-sandbox"],
+      args: [
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-accelerated-2d-canvas",
+        "--disable-gpu",
+        "--disable-setuid-sandbox",
+        "--disable-features=site-per-process",
+        "--no-zygote",
+        "--enable-unsafe-webgpu",
+      ],
       headless: true,
     },
     concurrency: Cluster.CONCURRENCY_PAGE,
-    maxConcurrency: 2,
+    maxConcurrency: 1,
   });
 
   await cluster.task(async ({ page, data: { url, code } }) => {
