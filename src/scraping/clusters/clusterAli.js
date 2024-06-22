@@ -15,7 +15,6 @@ const clusterAli = async ({ urls, codes, ctx }) => {
         "--disable-setuid-sandbox",
         "--disable-features=site-per-process",
         "--no-zygote",
-        "--enable-unsafe-webgpu",
       ],
       headless: true,
     },
@@ -26,7 +25,7 @@ const clusterAli = async ({ urls, codes, ctx }) => {
   await cluster.task(async ({ page, data: { url, code } }) => {
     try {
       products = await taskAliexpress(page, url, code);
-      return data.push(products);
+      data.push(products);
     } catch (err) {
       console.error(`Error Scaping Aliexpress : ${err.message}`);
       ctx.reply(err.message);

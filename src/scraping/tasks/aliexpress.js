@@ -23,8 +23,9 @@ const taskAliexpress = async (page, url, code) => {
     throw Error(`Enlace caido: ${url} `);
 
   const title = titleFull.split(",", 1)[0];
+  if (page.isClosed()) console.log("page is closed");
 
-  const divElement = await page.$(".es--wrap--vZDQqfj", { timeout: 60000 });
+  const divElement = await page.$(".es--wrap--vZDQqfjrs");
 
   const price = await page.evaluate(
     (element) => element?.textContent,
