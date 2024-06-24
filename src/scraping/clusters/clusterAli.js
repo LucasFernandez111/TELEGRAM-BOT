@@ -1,5 +1,5 @@
 const { Cluster } = require("puppeteer-cluster");
-const taskAliexpress = require("../tasks/aliexpress");
+const { taskAliexpress } = require("../tasks/aliexpress");
 
 const clusterAli = async ({ urls, codes, ctx }) => {
   const data = [];
@@ -9,17 +9,15 @@ const clusterAli = async ({ urls, codes, ctx }) => {
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       args: [
         "--no-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-accelerated-2d-canvas",
         "--disable-gpu",
         "--disable-setuid-sandbox",
-        "--disable-features=site-per-process",
         "--no-zygote",
       ],
       headless: true,
     },
     concurrency: Cluster.CONCURRENCY_PAGE,
-    maxConcurrency: 1,
+    maxConcurrency: 2,
+    ignoreHTTPSErrors: true,
   });
 
   await cluster.task(async ({ page, data: { url, code } }) => {
@@ -32,8 +30,8 @@ const clusterAli = async ({ urls, codes, ctx }) => {
     }
   });
 
-  urls.forEach((url, index) => {
-    cluster.queue({ url, code: codes[index] });
+  urls.forEach((url, i) => {
+    cluster.queue({ url, code: codes[i] });
   });
 
   await cluster.idle();

@@ -1,6 +1,3 @@
-const { timeout } = require("puppeteer");
-const requestInterception = require("../interceptions/interceptions");
-
 const cookies = [
   {
     name: "aep_usuc_f",
@@ -9,32 +6,20 @@ const cookies = [
     path: "/",
   },
 ];
-const taskAliexpress = async (page, url, code) => {
-  await page.setRequestInterception(true);
-  await page.on("request", requestInterception);
 
+exports.taskAliexpress = async (page, url, code) => {
   await page.setCookie(...cookies);
+  await page.goto(url, { waitUntil: "domcontentloaded" });
 
-  await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+  const title = await page.title();
 
-  const titleFull = await page.title();
-
-  if (["Page Not Found - Aliexpress.com", "404 page"].includes(titleFull))
+  if (["Page Not Found - Aliexpress.com", "404 page"].includes(title))
     throw Error(`Enlace caido: ${url} `);
 
-  const title = titleFull.split(",", 1)[0];
-  if (page.isClosed()) console.log("page is closed");
+  const element = await page.waitForSelector(".es--wrap--vZDQqfj ", {
+    timeout: 30000,
+  });
 
-  const divElement = await page.$(".es--wrap--vZDQqfjrs");
-
-  const price = await page.evaluate(
-    (element) => element?.textContent,
-    divElement
-  );
-  if (!price) throw Error(`${url}: Precio no encontrado!`);
-
-  page.removeAllListeners("request");
-  return { code, title, price, url };
+  const price = await element.evaluate((div) => div.textContent);
+  return { code, price, url };
 };
-
-module.exports = taskAliexpress;
