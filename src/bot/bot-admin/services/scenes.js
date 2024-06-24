@@ -191,7 +191,6 @@ const publishElements = new Scenes.WizardScene(
 
       handleError(ctx, error);
     } finally {
-      deleteAllFiles({ directoryPath: publishBasePath });
       deleteAllFiles({
         directoryPath: imagesBasePath,
       });

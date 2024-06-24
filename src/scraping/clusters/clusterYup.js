@@ -18,7 +18,6 @@ const clusterYupoo = async ({ urls, codes, ctx }) => {
   await cluster.task(async ({ page, data: { url, code } }) => {
     try {
       dataList = await taskYupoo(page, url, codes);
-      console.log(dataList);
     } catch (error) {
       handleError(ctx, error);
     }

@@ -15,7 +15,6 @@ const taskYupoo = async (page, url, codes) => {
     return await Promise.all(
       codes.map(async (code) => {
         const element = await page.$(`a[title="${code}"]`);
-        if (!element) throw Error(`No se encontro el elemento ${code}`);
 
         const href = await page.evaluate((el) => el.href, element);
         const titleCode = await page.evaluate((el) => el.title, element);
@@ -24,7 +23,8 @@ const taskYupoo = async (page, url, codes) => {
       })
     );
   } catch (err) {
-    throw Error(`No se encontraron los elementos ${codes}`);
+    console.log(err);
+    throw Error(`No se encontraron los elementos ${codes} de ${url}`);
   }
 };
 
